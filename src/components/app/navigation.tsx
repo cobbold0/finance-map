@@ -1,0 +1,146 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Plus } from "lucide-react";
+import { desktopNav, mobileTabs, quickActions } from "@/config/navigation";
+import { LogoMark } from "@/components/app/logo-mark";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import { useUiStore } from "@/stores/ui-store";
+
+export function DesktopSidebar() {
+  const pathname = usePathname();
+
+  return (
+    <aside className="hidden w-72 shrink-0 lg:block">
+      <div className="sticky top-0 flex h-screen flex-col gap-6 overflow-hidden border-r border-white/6 bg-[#050506] px-5 py-6">
+        <div className="flex items-center gap-3">
+          <LogoMark />
+          <div>
+            <p className="text-sm font-semibold">Finance Map</p>
+            <p className="text-xs text-muted-foreground">Personal finance OS</p>
+          </div>
+        </div>
+        <nav className="space-y-2">
+          {desktopNav.map((item) => {
+            const Icon = item.icon;
+            const active =
+              pathname === item.href ||
+              (item.href !== "/" && pathname.startsWith(item.href));
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "flex items-center gap-3 rounded-2xl px-4 py-3 text-sm text-muted-foreground transition hover:bg-white/[0.04] hover:text-foreground",
+                  active && "bg-white/[0.06] text-foreground",
+                )}
+              >
+                <Icon className="h-4 w-4" />
+                {item.title}
+              </Link>
+            );
+          })}
+        </nav>
+        <Card className="mt-auto">
+          <CardContent className="space-y-2">
+            <p className="text-sm font-semibold">Ready for production growth</p>
+            <p className="text-sm leading-6 text-muted-foreground">
+              Auth, budgets, goals, imports, reports, and notifications all share
+              the same scalable shell.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    </aside>
+  );
+}
+
+export function MobileBottomNav() {
+  const pathname = usePathname();
+
+  return (
+    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-black/90 px-3 pb-safe backdrop-blur-xl lg:hidden">
+      <div className="mx-auto flex max-w-xl items-center justify-around gap-2 py-3">
+        {mobileTabs.map((item) => {
+          const Icon = item.icon;
+          const active =
+            pathname === item.href ||
+            (item.href !== "/" && pathname.startsWith(item.href));
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                "flex min-w-0 flex-1 flex-col items-center gap-1 rounded-2xl px-2 py-2 text-[11px] text-muted-foreground transition",
+                active && "text-foreground",
+              )}
+            >
+              <Icon className={cn("h-5 w-5", active && "text-primary")} />
+              <span className="truncate">{item.title}</span>
+            </Link>
+          );
+        })}
+      </div>
+    </nav>
+  );
+}
+
+export function QuickActionsFab() {
+  const openQuickActions = useUiStore((state) => state.openQuickActions);
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={openQuickActions}
+        className="fixed bottom-24 right-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-[0_18px_40px_rgba(59,130,246,0.45)] transition hover:scale-[1.02] lg:hidden"
+        aria-label="Open quick actions"
+      >
+        <Plus className="h-6 w-6" />
+      </button>
+      <QuickActionsSheet />
+    </>
+  );
+}
+
+function QuickActionsSheet() {
+  const isOpen = useUiStore((state) => state.quickActionsOpen);
+  const closeQuickActions = useUiStore((state) => state.closeQuickActions);
+
+  if (!isOpen) {
+    return null;
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 lg:hidden">
+      <button
+        type="button"
+        className="absolute inset-0 bg-black/70"
+        onClick={closeQuickActions}
+        aria-label="Close quick actions"
+      />
+      <div className="absolute inset-x-0 bottom-0 rounded-t-[2rem] border border-white/10 bg-[#0c0c0f] p-5 shadow-2xl">
+        <div className="mx-auto mb-5 h-1.5 w-12 rounded-full bg-white/15" />
+        <div className="grid gap-3">
+          {quickActions.map((item) => (
+            <Button
+              key={item.id}
+              asChild
+              variant="secondary"
+              className="justify-start rounded-2xl"
+            >
+              <Link href={item.href} onClick={closeQuickActions}>
+                {item.title}
+              </Link>
+            </Button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}

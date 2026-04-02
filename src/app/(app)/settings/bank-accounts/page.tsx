@@ -1,0 +1,56 @@
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/app/empty-state";
+import { PageHeader } from "@/components/app/page-header";
+import { getBankAccounts } from "@/data/finance-repository";
+import { BankAccountCard } from "@/features/settings/bank-account-card";
+
+export default async function BankAccountsPage() {
+  const bankAccounts = await getBankAccounts();
+
+  return (
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow="Bank details"
+        title="Bank account details"
+        description="Store copyable bank details and share the full summary in one action."
+        action={
+          <Button asChild>
+            <Link href="/settings/bank-accounts/new">Add details</Link>
+          </Button>
+        }
+      />
+      {bankAccounts.length ? (
+        <div className="grid gap-4 lg:grid-cols-2">
+          {bankAccounts.map((detail) => (
+            <BankAccountCard
+              key={detail.id}
+              detail={{
+                id: detail.id,
+                label: detail.label,
+                bankName: detail.bank_name,
+                accountName: detail.account_name,
+                accountNumber: detail.account_number,
+                branch: detail.branch,
+                swiftCode: detail.swift_code,
+                mobileMoneyProvider: detail.mobile_money_provider,
+                mobileMoneyNumber: detail.mobile_money_number,
+                notes: detail.notes,
+              }}
+            />
+          ))}
+        </div>
+      ) : (
+        <EmptyState
+          title="No bank details yet"
+          description="Save payout, transfer, or mobile money details so each field can be copied or shared quickly."
+          action={
+            <Button asChild>
+              <Link href="/settings/bank-accounts/new">Add bank details</Link>
+            </Button>
+          }
+        />
+      )}
+    </div>
+  );
+}
