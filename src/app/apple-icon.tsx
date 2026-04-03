@@ -2,12 +2,12 @@ import { ImageResponse } from "next/og";
 import { PwaIconMarkup } from "@/lib/pwa-icon";
 
 export const size = {
-  width: 512,
-  height: 512,
+  width: 180,
+  height: 180,
 };
 
 export const contentType = "image/png";
 
-export default function Icon() {
-  return new ImageResponse(<PwaIconMarkup size={512} />, size);
+export default function AppleIcon() {
+  return new ImageResponse(<PwaIconMarkup size={180} />, size);
 }

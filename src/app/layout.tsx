@@ -17,6 +17,19 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Finance Map",
   description: "Personal finance tracking for wallets, budgets, goals, and reports.",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Finance Map",
+  },
+  icons: {
+    icon: [
+      { url: "/icons/192", sizes: "192x192", type: "image/png" },
+      { url: "/icons/512", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-icon", sizes: "180x180", type: "image/png" }],
+  },
 };
 
 export default function RootLayout({
