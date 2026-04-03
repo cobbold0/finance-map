@@ -1,7 +1,10 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
+import { PencilLine } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { PageHeader } from "@/components/app/page-header";
+import { HeaderActionLink, PageHeader } from "@/components/app/page-header";
 import { calculateGoalProgress, formatCurrency, getGoalRemaining } from "@/domain/finance";
 import { getCurrentUserProfile, getGoalDetail } from "@/data/finance-repository";
 
@@ -24,7 +27,19 @@ export default async function GoalDetailPage({
 
   return (
     <div className="space-y-6">
-      <PageHeader eyebrow="Goal detail" title={snapshot.goal.name} description={snapshot.goal.description ?? "Track progress, milestones, and roadmap structure."} />
+      <PageHeader
+        eyebrow="Goal detail"
+        title={snapshot.goal.name}
+        description={
+          snapshot.goal.description ??
+          "Track progress, milestones, and roadmap structure."
+        }
+        action={
+          <HeaderActionLink href={`/goals/${goalId}/edit`} icon={PencilLine}>
+            Update progress
+          </HeaderActionLink>
+        }
+      />
       <Card>
         <CardContent className="space-y-4">
           <p className="text-3xl font-semibold">{formatCurrency(snapshot.goal.savedAmount, currency)}</p>
@@ -32,6 +47,14 @@ export default async function GoalDetailPage({
           <div className="flex justify-between text-sm text-muted-foreground">
             <span>{formatCurrency(snapshot.goal.targetAmount, currency)} target</span>
             <span>{formatCurrency(getGoalRemaining(snapshot.goal), currency)} remaining</span>
+          </div>
+          <div className="pt-2">
+            <Button asChild variant="outline">
+              <Link href={`/goals/${goalId}/edit`}>
+                <PencilLine className="h-4 w-4" />
+                Update saved amount
+              </Link>
+            </Button>
           </div>
         </CardContent>
       </Card>

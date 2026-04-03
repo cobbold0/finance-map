@@ -364,6 +364,27 @@ export async function getBudgetOverview(): Promise<BudgetOverviewSnapshot> {
   };
 }
 
+export async function getBudgetCategories(): Promise<
+  Array<{ id: string; name: string }>
+> {
+  const ctx = await getAuthedSupabase();
+
+  if (!ctx) {
+    return [];
+  }
+
+  const { data } = await ctx.supabase
+    .from("budget_categories")
+    .select("id, name")
+    .eq("user_id", ctx.user.id)
+    .order("name", { ascending: true });
+
+  return (data ?? []).map((category) => ({
+    id: category.id,
+    name: category.name,
+  }));
+}
+
 export async function getReminders(): Promise<Reminder[]> {
   const ctx = await getAuthedSupabase();
 

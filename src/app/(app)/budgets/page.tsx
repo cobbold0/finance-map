@@ -1,4 +1,6 @@
-import { ArrowUpRight } from "lucide-react";
+import Link from "next/link";
+import { ArrowUpRight, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/app/empty-state";
 import { HeaderActionLink, PageHeader } from "@/components/app/page-header";
@@ -20,26 +22,31 @@ export default async function BudgetsPage() {
         title="Budget with clarity"
         description="See monthly limits, category pressure, and warning states before spending slips."
         action={
-          snapshot.currentBudget ? (
-            <HeaderActionLink
-              href={`/budgets/${snapshot.currentBudget.month}`}
-              icon={ArrowUpRight}
-            >
-              Open month
-            </HeaderActionLink>
-          ) : undefined
+          <HeaderActionLink href="/budgets/new" icon={Plus}>
+            Create budget
+          </HeaderActionLink>
         }
       />
       {snapshot.currentBudget ? (
         <div className="space-y-4">
           <Card>
             <CardContent className="space-y-2">
-              <p className="text-sm text-muted-foreground">
-                {formatMonthLabel(snapshot.currentBudget.month)}
-              </p>
-              <p className="text-3xl font-semibold">
-                {formatCurrency(snapshot.currentBudget.totalLimit ?? 0, currency)}
-              </p>
+              <div className="flex items-start justify-between gap-4">
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground">
+                    {formatMonthLabel(snapshot.currentBudget.month)}
+                  </p>
+                  <p className="text-3xl font-semibold">
+                    {formatCurrency(snapshot.currentBudget.totalLimit ?? 0, currency)}
+                  </p>
+                </div>
+                <Button asChild variant="ghost">
+                  <Link href={`/budgets/${snapshot.currentBudget.month}`}>
+                    Open month
+                    <ArrowUpRight className="h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
             </CardContent>
           </Card>
           <div className="grid gap-4 lg:grid-cols-2">
@@ -69,6 +76,11 @@ export default async function BudgetsPage() {
         <EmptyState
           title="No monthly budget yet"
           description="Create a monthly budget to track category limits, spending progress, and warning states."
+          action={
+            <Button asChild>
+              <Link href="/budgets/new">Create budget</Link>
+            </Button>
+          }
         />
       )}
     </div>
