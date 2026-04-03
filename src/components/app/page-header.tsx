@@ -1,5 +1,8 @@
+import Link from "next/link";
+import type { LucideIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { PageHeaderClient } from "@/components/app/page-header-client";
 import { cn } from "@/lib/utils";
 
 export function PageHeader({
@@ -16,41 +19,37 @@ export function PageHeader({
   className?: string;
 }) {
   return (
-    <div
-      className={cn(
-        "sticky top-0 z-20 -mx-4 mb-10 border-b border-white/6 bg-black/75 px-4 py-4 backdrop-blur-xl md:static md:m-0 md:mb-4 md:border-none md:bg-transparent md:px-0 md:py-0",
-        className,
-      )}
-    >
-      <div className="flex items-start justify-between gap-4">
-        <div className="space-y-1">
-          <h1 className="text-xl font-semibold tracking-tight md:text-xl">
-            {title}
-          </h1>
-          {description ? (
-            <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
-              {description}
-            </p>
-          ) : null}
-        </div>
-
-        {action ? <div className="hidden md:block">{action}</div> : null}
-      </div>
-      {action ? <div className="mt-4 md:hidden">{action}</div> : null}
-    </div>
+    <PageHeaderClient
+      eyebrow={eyebrow ? <Badge>{eyebrow}</Badge> : undefined}
+      title={title}
+      description={description}
+      action={action}
+      className={className}
+    />
   );
 }
 
 export function HeaderActionLink({
   href,
+  icon: Icon,
   children,
+  variant,
+  className,
 }: {
   href: string;
+  icon: LucideIcon;
   children: React.ReactNode;
+  variant?: "default" | "secondary" | "outline" | "ghost" | "link" | "destructive";
+  className?: string;
 }) {
   return (
-    <Button asChild>
-      <a href={href}>{children}</a>
+    <Button asChild variant={variant} className={cn("page-header-action", className)}>
+      <Link href={href}>
+        <span className="page-header-action-icon" aria-hidden="true">
+          <Icon className="h-4 w-4" />
+        </span>
+        <span className="page-header-action-label">{children}</span>
+      </Link>
     </Button>
   );
 }

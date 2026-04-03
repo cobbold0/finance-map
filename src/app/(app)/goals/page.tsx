@@ -1,8 +1,9 @@
 import Link from "next/link";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/app/empty-state";
-import { PageHeader } from "@/components/app/page-header";
+import { HeaderActionLink, PageHeader } from "@/components/app/page-header";
 import { Progress } from "@/components/ui/progress";
 import { calculateGoalProgress, formatCurrency, getGoalRemaining } from "@/domain/finance";
 import { getCurrentUserProfile, getGoals } from "@/data/finance-repository";
@@ -18,9 +19,9 @@ export default async function GoalsPage() {
         title="Plan money around what matters"
         description="Track target amounts, milestones, project phases, and progress toward meaningful outcomes."
         action={
-          <Button asChild>
-            <Link href="/goals/new">New goal</Link>
-          </Button>
+          <HeaderActionLink href="/goals/new" icon={Plus}>
+            New goal
+          </HeaderActionLink>
         }
       />
       {goals.length ? (

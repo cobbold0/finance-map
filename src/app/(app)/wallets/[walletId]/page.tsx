@@ -1,8 +1,7 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import { ArrowDownLeft, ArrowUpRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { PageHeader } from "@/components/app/page-header";
+import { HeaderActionLink, PageHeader } from "@/components/app/page-header";
 import { formatCurrency } from "@/domain/finance";
 import { getWalletDetail } from "@/data/finance-repository";
 
@@ -26,12 +25,19 @@ export default async function WalletDetailPage({
         description={snapshot.wallet.description ?? "Track balance, quick actions, and wallet history."}
         action={
           <div className="flex gap-2">
-            <Button asChild variant="outline">
-              <Link href={`/transactions/new?type=income&walletId=${snapshot.wallet.id}`}>Add income</Link>
-            </Button>
-            <Button asChild>
-              <Link href={`/transactions/new?type=expense&walletId=${snapshot.wallet.id}`}>Add expense</Link>
-            </Button>
+            <HeaderActionLink
+              href={`/transactions/new?type=income&walletId=${snapshot.wallet.id}`}
+              icon={ArrowDownLeft}
+              variant="outline"
+            >
+              Add income
+            </HeaderActionLink>
+            <HeaderActionLink
+              href={`/transactions/new?type=expense&walletId=${snapshot.wallet.id}`}
+              icon={ArrowUpRight}
+            >
+              Add expense
+            </HeaderActionLink>
           </div>
         }
       />

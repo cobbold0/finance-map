@@ -1,9 +1,10 @@
 import Link from "next/link";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/app/empty-state";
 import { MetricCard } from "@/components/app/metric-card";
-import { PageHeader } from "@/components/app/page-header";
+import { HeaderActionLink, PageHeader } from "@/components/app/page-header";
 import { formatCompactCurrency, formatCurrency } from "@/domain/finance";
 import { getCurrentUserProfile, getDashboardSnapshot } from "@/data/finance-repository";
 
@@ -19,9 +20,9 @@ export default async function DashboardPage() {
         title="Your money at a glance"
         description="Track balances, cash flow, goals, budgets, and reminders from one calm operating layer."
         action={
-          <Button asChild>
-            <Link href="/transactions/new">Add transaction</Link>
-          </Button>
+          <HeaderActionLink href="/transactions/new" icon={Plus}>
+            Add transaction
+          </HeaderActionLink>
         }
       />
 

@@ -1,8 +1,8 @@
-import Link from "next/link";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/app/empty-state";
-import { PageHeader } from "@/components/app/page-header";
+import { HeaderActionLink, PageHeader } from "@/components/app/page-header";
 import { formatCurrency } from "@/domain/finance";
 import { getTransactions, getWallets } from "@/data/finance-repository";
 
@@ -27,9 +27,9 @@ export default async function TransactionsPage({
         title="Track every money movement"
         description="Search, filter, reconcile, and export your income, expenses, and transfers."
         action={
-          <Button asChild>
-            <Link href="/transactions/new">New transaction</Link>
-          </Button>
+          <HeaderActionLink href="/transactions/new" icon={Plus}>
+            New transaction
+          </HeaderActionLink>
         }
       />
       <Card>

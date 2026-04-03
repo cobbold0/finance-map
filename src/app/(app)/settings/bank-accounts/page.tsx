@@ -1,7 +1,8 @@
 import Link from "next/link";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/app/empty-state";
-import { PageHeader } from "@/components/app/page-header";
+import { HeaderActionLink, PageHeader } from "@/components/app/page-header";
 import { getBankAccounts } from "@/data/finance-repository";
 import { BankAccountCard } from "@/features/settings/bank-account-card";
 
@@ -15,9 +16,9 @@ export default async function BankAccountsPage() {
         title="Bank account details"
         description="Store copyable bank details and share the full summary in one action."
         action={
-          <Button asChild>
-            <Link href="/settings/bank-accounts/new">Add details</Link>
-          </Button>
+          <HeaderActionLink href="/settings/bank-accounts/new" icon={Plus}>
+            Add details
+          </HeaderActionLink>
         }
       />
       {bankAccounts.length ? (

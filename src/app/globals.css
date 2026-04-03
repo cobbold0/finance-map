@@ -91,3 +91,28 @@ body {
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
+
+.page-header-action-icon {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  [data-page-header][data-collapsed="true"] .page-header-title,
+  [data-page-header][data-collapsed="true"] .page-header-description {
+    display: none;
+  }
+
+  [data-page-header][data-collapsed="true"] .page-header-action {
+    min-width: 2.75rem;
+    justify-content: center;
+    padding-inline: 0.875rem;
+  }
+
+  [data-page-header][data-collapsed="true"] .page-header-action-label {
+    display: none;
+  }
+
+  [data-page-header][data-collapsed="true"] .page-header-action-icon {
+    display: inline-flex;
+  }
+}

@@ -1,8 +1,7 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { ArrowUpRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/app/empty-state";
-import { PageHeader } from "@/components/app/page-header";
+import { HeaderActionLink, PageHeader } from "@/components/app/page-header";
 import { Progress } from "@/components/ui/progress";
 import { formatMonthLabel, formatCurrency } from "@/domain/finance";
 import { getCurrentUserProfile, getBudgetOverview } from "@/data/finance-repository";
@@ -22,9 +21,12 @@ export default async function BudgetsPage() {
         description="See monthly limits, category pressure, and warning states before spending slips."
         action={
           snapshot.currentBudget ? (
-            <Button asChild>
-              <Link href={`/budgets/${snapshot.currentBudget.month}`}>Open month</Link>
-            </Button>
+            <HeaderActionLink
+              href={`/budgets/${snapshot.currentBudget.month}`}
+              icon={ArrowUpRight}
+            >
+              Open month
+            </HeaderActionLink>
           ) : undefined
         }
       />

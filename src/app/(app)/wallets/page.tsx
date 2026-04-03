@@ -1,8 +1,9 @@
 import Link from "next/link";
+import { Plus } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/app/empty-state";
-import { PageHeader } from "@/components/app/page-header";
+import { HeaderActionLink, PageHeader } from "@/components/app/page-header";
 import { formatCurrency } from "@/domain/finance";
 import { getWallets } from "@/data/finance-repository";
 
@@ -16,9 +17,9 @@ export default async function WalletsPage() {
         title="Manage every wallet intentionally"
         description="Use separate wallets for checking, savings, business, cash, emergency funds, and project money."
         action={
-          <Button asChild>
-            <Link href="/wallets/new">New wallet</Link>
-          </Button>
+          <HeaderActionLink href="/wallets/new" icon={Plus}>
+            New wallet
+          </HeaderActionLink>
         }
       />
       {wallets.length ? (
