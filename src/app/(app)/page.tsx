@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { Landmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/app/empty-state";
@@ -20,8 +20,8 @@ export default async function DashboardPage() {
         title="Your money at a glance"
         description="Track balances, cash flow, goals, budgets, and reminders from one calm operating layer."
         action={
-          <HeaderActionLink href="/transactions/new" icon={Plus}>
-            Add transaction
+          <HeaderActionLink href="/settings/bank-accounts" icon={Landmark}>
+            Bank details
           </HeaderActionLink>
         }
       />
