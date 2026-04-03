@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { PageHeader } from "@/components/app/page-header";
 import { getNotificationPreferences, getReminders } from "@/data/finance-repository";
+import { NotificationActionsCard } from "@/features/notifications/notification-actions-card";
 
 export default async function NotificationsPage() {
   const [preferences, reminders] = await Promise.all([
@@ -15,12 +16,13 @@ export default async function NotificationsPage() {
         title="Smart reminders and preferences"
         description="Prepare for in-app and browser notification flows without changing the data model later."
       />
+      <NotificationActionsCard nextReminder={reminders[0]} />
       <Card>
         <CardContent className="space-y-3">
           <h2 className="text-lg font-semibold">Reminder stream</h2>
           {reminders.length ? (
             reminders.map((reminder) => (
-              <div key={reminder.id} className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
+              <div key={reminder.id} className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
                 <p className="font-medium">{reminder.title}</p>
                 <p className="text-sm text-muted-foreground">{reminder.description ?? "Reminder scheduled"}</p>
               </div>

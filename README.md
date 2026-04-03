@@ -11,7 +11,7 @@ Finance Map is a mobile-first personal finance web app and installable PWA built
 - React Hook Form + Zod
 - Zustand for UI state
 - Recharts for reports
-- PWA foundation via `next-pwa`
+- Manifest + custom service worker PWA foundation
 
 ## Architecture
 
@@ -51,6 +51,7 @@ Implemented baseline screens and architecture:
 - Settings hub, profile/preferences, bank account details, import/export
 - JSON export API route
 - Install prompt and browser notification permission prompt
+- Explicit `public/sw.js` registration with offline shell fallback and notification click handling
 - Mobile bottom tab navigation and desktop sidebar shell
 
 ## Running Locally
@@ -117,6 +118,17 @@ can be added without restructuring the screens.
 
 ## Important Caveats
 
-- Browser notifications are currently local/app-driven architecture, not server push.
+- Browser notifications are implemented as local/browser notifications with service-worker delivery, not server push subscriptions yet.
 - CSV import has an entry route and architecture slot, but the full preview/mapping workflow is the next implementation step.
 - Reports currently use existing transactional data and are ready for richer rollups once more seeded/live data is available.
+
+## PWA And Notifications
+
+- `public/sw.js`
+  App-shell caching, navigation fallback to `/offline`, runtime asset caching, and notification click routing.
+- `src/lib/pwa.ts`
+  Centralized browser notification and service-worker helpers.
+- `src/components/providers/pwa-provider.tsx`
+  Registers the service worker and keeps browser permission state in sync.
+- Development note:
+  Service worker registration is production-only by default. Set `NEXT_PUBLIC_ENABLE_PWA_DEV=true` if you want to test registration locally.

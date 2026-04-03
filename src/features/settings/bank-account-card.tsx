@@ -92,7 +92,7 @@ export function BankAccountCard({
           return (
             <div
               key={field.label}
-              className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3"
+              className="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3"
             >
               <div>
                 <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">

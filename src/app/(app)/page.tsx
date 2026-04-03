@@ -51,7 +51,7 @@ export default async function DashboardPage() {
                 {snapshot.quickWallets.map((wallet) => (
                   <div
                     key={wallet.id}
-                    className="rounded-2xl border border-white/10 bg-white/[0.03] p-4"
+                    className="rounded-xl border border-white/10 bg-white/[0.03] p-4"
                   >
                     <p className="text-sm text-muted-foreground">{wallet.name}</p>
                     <p className="mt-2 text-xl font-semibold">
@@ -120,7 +120,7 @@ export default async function DashboardPage() {
                 {snapshot.recentTransactions.map((transaction) => (
                   <div
                     key={transaction.id}
-                    className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3"
+                    className="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3"
                   >
                     <div>
                       <p className="font-medium">{transaction.category ?? "Uncategorized"}</p>
@@ -154,7 +154,7 @@ export default async function DashboardPage() {
               {snapshot.activeGoals.map((goal) => (
                 <div
                   key={goal.id}
-                  className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3"
+                  className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3"
                 >
                   <p className="font-medium">{goal.name}</p>
                   <p className="text-sm text-muted-foreground">
@@ -166,7 +166,7 @@ export default async function DashboardPage() {
               {snapshot.alerts.map((alert) => (
                 <div
                   key={alert.id}
-                  className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3"
+                  className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3"
                 >
                   <p className="font-medium">{alert.title}</p>
                   <p className="text-sm text-muted-foreground">

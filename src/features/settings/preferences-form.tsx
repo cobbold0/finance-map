@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { CURRENCIES } from "@/domain/currencies";
 import { savePreferencesAction } from "@/features/settings/actions";
 import { preferencesSchema } from "@/features/settings/schemas";
+import { requestBrowserNotificationPermission } from "@/lib/pwa";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -33,6 +34,20 @@ export function PreferencesForm({
       className="space-y-4"
       onSubmit={form.handleSubmit((values) =>
         startTransition(async () => {
+          if (values.browserEnabled) {
+            const permission = await requestBrowserNotificationPermission();
+
+            if (permission === "unsupported") {
+              toast.error("This browser does not support notifications.");
+              return;
+            }
+
+            if (permission === "denied") {
+              toast.error("Allow browser notifications to enable reminder delivery.");
+              return;
+            }
+          }
+
           const result = await savePreferencesAction(values);
 
           if (result?.error) {
@@ -75,7 +90,7 @@ export function PreferencesForm({
         ].map(([name, label]) => (
           <label
             key={name}
-            className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm"
+            className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm"
           >
             <input
               type="checkbox"

@@ -6,15 +6,17 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: "Finance Map",
     description: "A mobile-first personal finance operating system.",
     start_url: "/",
+    scope: "/",
     display: "standalone",
     background_color: "#000000",
     theme_color: "#000000",
     orientation: "portrait",
     icons: [
       {
-        src: "/favicon.ico",
-        sizes: "48x48",
-        type: "image/x-icon",
+        src: "/icon",
+        sizes: "256x256",
+        type: "image/png",
+        purpose: "maskable",
       },
     ],
   };

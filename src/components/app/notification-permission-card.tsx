@@ -1,39 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Bell } from "lucide-react";
+import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { usePwaStatus } from "@/hooks/use-pwa-status";
+import { requestBrowserNotificationPermission } from "@/lib/pwa";
 import { useUiStore } from "@/stores/ui-store";
 
 export function NotificationPermissionCard() {
-  const [permission, setPermission] = useState<
-    NotificationPermission | "unsupported"
-  >(() =>
-    typeof window === "undefined"
-      ? "default"
-      : "Notification" in window
-        ? Notification.permission
-        : "unsupported",
-  );
+  const { isSupported, isRegistrationEnabled, permission } = usePwaStatus();
   const visible = useUiStore((state) => state.notificationPromptVisible);
   const setVisible = useUiStore((state) => state.setNotificationPromptVisible);
 
-  useEffect(() => {
-    if (typeof window === "undefined" || !("Notification" in window)) {
-      return;
-    }
-
-    const syncPermission = () => setPermission(Notification.permission);
-    syncPermission();
-    document.addEventListener("visibilitychange", syncPermission);
-
-    return () => {
-      document.removeEventListener("visibilitychange", syncPermission);
-    };
-  }, []);
-
-  if (!visible || permission === "granted" || permission === "unsupported") {
+  if (
+    !visible ||
+    !isSupported ||
+    !isRegistrationEnabled ||
+    permission === "granted" ||
+    permission === "unsupported"
+  ) {
     return null;
   }
 
@@ -56,9 +42,21 @@ export function NotificationPermissionCard() {
           </Button>
           <Button
             onClick={async () => {
-              const result = await Notification.requestPermission();
-              setPermission(result);
-              setVisible(false);
+              const nextPermission = await requestBrowserNotificationPermission();
+
+              if (nextPermission === "granted") {
+                toast.success("Browser notifications enabled.");
+                setVisible(false);
+                return;
+              }
+
+              if (nextPermission === "denied") {
+                toast.error("Notification permission was denied by the browser.");
+                setVisible(false);
+                return;
+              }
+
+              toast.message("Notification permission is still pending.");
             }}
           >
             Allow

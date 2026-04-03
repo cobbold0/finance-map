@@ -41,7 +41,7 @@ export default async function GoalDetailPage({
             <h2 className="text-lg font-semibold">Milestones</h2>
             {snapshot.milestones.length ? (
               snapshot.milestones.map((milestone) => (
-                <div key={milestone.id} className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
+                <div key={milestone.id} className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
                   <p className="font-medium">{milestone.title}</p>
                   <p className="text-sm text-muted-foreground">{milestone.dueDate ?? "No due date"}</p>
                 </div>
@@ -56,7 +56,7 @@ export default async function GoalDetailPage({
             <h2 className="text-lg font-semibold">Project phases</h2>
             {snapshot.phases.length ? (
               snapshot.phases.map((phase) => (
-                <div key={phase.id} className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
+                <div key={phase.id} className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
                   <p className="font-medium">{phase.title}</p>
                   <p className="text-sm text-muted-foreground">{phase.description ?? "No notes yet"}</p>
                 </div>

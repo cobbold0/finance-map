@@ -39,12 +39,12 @@ export default async function TransactionsPage({
               name="query"
               defaultValue={query}
               placeholder="Search notes or category"
-              className="h-11 rounded-2xl border border-white/10 bg-white/[0.03] px-4 text-sm"
+              className="h-11 rounded-xl border border-white/10 bg-white/[0.03] px-4 text-sm"
             />
             <select
               name="walletId"
               defaultValue={walletId}
-              className="h-11 rounded-2xl border border-white/10 bg-white/[0.03] px-4 text-sm"
+              className="h-11 rounded-xl border border-white/10 bg-white/[0.03] px-4 text-sm"
             >
               <option value="">All wallets</option>
               {wallets.map((wallet) => (
@@ -56,7 +56,7 @@ export default async function TransactionsPage({
             <select
               name="type"
               defaultValue={type}
-              className="h-11 rounded-2xl border border-white/10 bg-white/[0.03] px-4 text-sm"
+              className="h-11 rounded-xl border border-white/10 bg-white/[0.03] px-4 text-sm"
             >
               <option value="">All types</option>
               <option value="income">Income</option>
@@ -73,7 +73,7 @@ export default async function TransactionsPage({
             {transactions.map((transaction) => (
               <div
                 key={transaction.id}
-                className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3"
+                className="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3"
               >
                 <div>
                   <p className="font-medium">{transaction.category ?? "Uncategorized"}</p>

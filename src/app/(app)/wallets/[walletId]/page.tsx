@@ -50,7 +50,7 @@ export default async function WalletDetailPage({
             {snapshot.recentTransactions.map((transaction) => (
               <div
                 key={transaction.id}
-                className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3"
+                className="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3"
               >
                 <div>
                   <p className="font-medium">{transaction.category ?? "Uncategorized"}</p>

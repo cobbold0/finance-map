@@ -102,7 +102,7 @@ export function BankAccountForm({
         <Label>Notes</Label>
         <Textarea {...form.register("notes")} />
       </div>
-      <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm">
+      <label className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm">
         <input type="checkbox" className="h-4 w-4" {...form.register("isPrimary")} />
         Set as primary payout/account detail
       </label>

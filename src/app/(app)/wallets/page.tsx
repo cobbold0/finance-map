@@ -31,7 +31,7 @@ export default async function WalletsPage() {
                     <h2 className="text-lg font-semibold">{wallet.name}</h2>
                     <p className="text-sm text-muted-foreground">{wallet.description ?? "No notes yet"}</p>
                   </div>
-                  <div className="h-3 w-3 rounded-full" style={{ backgroundColor: wallet.color }} />
+                  <div className="h-3 w-3 rounded-xl" style={{ backgroundColor: wallet.color }} />
                 </div>
                 <p className="text-3xl font-semibold">
                   {formatCurrency(wallet.balance, wallet.nativeCurrency)}

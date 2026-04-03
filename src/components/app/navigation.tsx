@@ -35,7 +35,7 @@ export function DesktopSidebar() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex items-center gap-3 rounded-2xl px-4 py-3 text-sm text-muted-foreground transition hover:bg-white/[0.04] hover:text-foreground",
+                  "flex items-center gap-3 rounded-xl px-4 py-3 text-sm text-muted-foreground transition hover:bg-white/[0.04] hover:text-foreground",
                   active && "bg-white/[0.06] text-foreground",
                 )}
               >
@@ -76,7 +76,7 @@ export function MobileBottomNav() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex min-w-0 flex-1 flex-col items-center gap-1 rounded-2xl px-2 py-2 text-[11px] text-muted-foreground transition",
+                "flex min-w-0 flex-1 flex-col items-center gap-1 rounded-xl px-2 py-2 text-[11px] text-muted-foreground transition",
                 active && "text-foreground",
               )}
             >
@@ -98,7 +98,7 @@ export function QuickActionsFab() {
       <button
         type="button"
         onClick={openQuickActions}
-        className="fixed bottom-24 right-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-[0_18px_40px_rgba(59,130,246,0.45)] transition hover:scale-[1.02] lg:hidden"
+        className="fixed bottom-24 right-4 z-40 flex h-14 w-14 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-[0_18px_40px_rgba(59,130,246,0.45)] transition hover:scale-[1.02] lg:hidden"
         aria-label="Open quick actions"
       >
         <Plus className="h-6 w-6" />
@@ -124,15 +124,15 @@ function QuickActionsSheet() {
         onClick={closeQuickActions}
         aria-label="Close quick actions"
       />
-      <div className="absolute inset-x-0 bottom-0 rounded-t-[2rem] border border-white/10 bg-[#0c0c0f] p-5 shadow-2xl">
-        <div className="mx-auto mb-5 h-1.5 w-12 rounded-full bg-white/15" />
+      <div className="absolute inset-x-0 bottom-0 rounded-t-md border border-white/10 bg-[#0c0c0f] p-5 shadow-2xl">
+        <div className="mx-auto mb-5 h-1.5 w-12 rounded-xl bg-white/15" />
         <div className="grid gap-3">
           {quickActions.map((item) => (
             <Button
               key={item.id}
               asChild
               variant="secondary"
-              className="justify-start rounded-2xl"
+              className="justify-start rounded-xl"
             >
               <Link href={item.href} onClick={closeQuickActions}>
                 {item.title}
