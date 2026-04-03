@@ -1,10 +1,9 @@
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/app/empty-state";
 import { PageHeader } from "@/components/app/page-header";
 import { getBudgetCategories } from "@/data/finance-repository";
-import { createStarterBudgetCategoriesAction } from "@/features/budgets/actions";
 import { BudgetForm } from "@/features/budgets/budget-form";
+import Link from "next/link";
 
 export default async function NewBudgetPage() {
   const categories = await getBudgetCategories();
@@ -21,16 +20,11 @@ export default async function NewBudgetPage() {
       ) : (
         <EmptyState
           title="No budget categories yet"
-          description="Create starter categories first so you can assign limits to the month."
+          description="Add budget categories first so you can assign limits to the month."
           action={
-            <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-              <form action={createStarterBudgetCategoriesAction}>
-                <Button type="submit">Create starter categories</Button>
-              </form>
-              <Button asChild variant="outline">
-                <Link href="/settings">Back to settings</Link>
-              </Button>
-            </div>
+            <Button asChild>
+              <Link href="/settings/budget-categories">Manage budget categories</Link>
+            </Button>
           }
         />
       )}

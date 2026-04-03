@@ -5,6 +5,7 @@ import {
   BudgetOverviewSnapshot,
   DashboardSnapshot,
   ExportBundle,
+  FinancialRecord,
   Goal,
   GoalDetailSnapshot,
   GoalMilestone,
@@ -365,7 +366,7 @@ export async function getBudgetOverview(): Promise<BudgetOverviewSnapshot> {
 }
 
 export async function getBudgetCategories(): Promise<
-  Array<{ id: string; name: string }>
+  Array<{ id: string; name: string; color: string | null; icon: string | null }>
 > {
   const ctx = await getAuthedSupabase();
 
@@ -375,14 +376,47 @@ export async function getBudgetCategories(): Promise<
 
   const { data } = await ctx.supabase
     .from("budget_categories")
-    .select("id, name")
+    .select("id, name, color, icon")
     .eq("user_id", ctx.user.id)
     .order("name", { ascending: true });
 
   return (data ?? []).map((category) => ({
     id: category.id,
     name: category.name,
+    color: category.color ?? null,
+    icon: category.icon ?? null,
   }));
+}
+
+export async function getBudgetCategory(categoryId: string): Promise<{
+  id: string;
+  name: string;
+  color: string | null;
+  icon: string | null;
+} | null> {
+  const ctx = await getAuthedSupabase();
+
+  if (!ctx) {
+    return null;
+  }
+
+  const { data } = await ctx.supabase
+    .from("budget_categories")
+    .select("id, name, color, icon")
+    .eq("id", categoryId)
+    .eq("user_id", ctx.user.id)
+    .maybeSingle();
+
+  if (!data) {
+    return null;
+  }
+
+  return {
+    id: data.id,
+    name: data.name,
+    color: data.color ?? null,
+    icon: data.icon ?? null,
+  };
 }
 
 export async function getReminders(): Promise<Reminder[]> {
@@ -484,13 +518,14 @@ export async function getNotificationPreferences(): Promise<NotificationPreferen
 export async function getDashboardSnapshot(): Promise<DashboardSnapshot> {
   const profile = await getCurrentUserProfile();
   const baseCurrency = profile?.baseCurrency ?? "GHS";
-  const [wallets, transactions, goals, budgetOverview, reminders] =
+  const [wallets, transactions, goals, budgetOverview, reminders, financialRecords] =
     await Promise.all([
       getWallets(),
       getTransactions(),
       getGoals(),
       getBudgetOverview(),
       getReminders(),
+      getFinancialRecords(),
     ]);
 
   const { income, expense } = getIncomeVsExpense(transactions);
@@ -513,11 +548,30 @@ export async function getDashboardSnapshot(): Promise<DashboardSnapshot> {
     (total, category) => total + category.spentAmount,
     0,
   );
+  const totalInvestmentsBase = financialRecords
+    .filter((record) =>
+      record.type === "investment" ||
+      record.type === "pension_tier_1" ||
+      record.type === "pension_tier_2" ||
+      record.type === "pension_tier_3",
+    )
+    .reduce(
+      (total, record) =>
+        total +
+        convertToBaseCurrency(
+          record.currentValue ?? 0,
+          record.currency,
+          baseCurrency,
+          rates,
+        ),
+      0,
+    );
 
   return {
     totalBalanceBase,
     totalIncomeBase: income,
     totalExpenseBase: expense,
+    totalInvestmentsBase,
     savingsRate:
       income > 0 ? Math.max(((income - expense) / income) * 100, 0) : 0,
     walletCount: wallets.length,
@@ -623,6 +677,54 @@ export async function getBankAccounts() {
   }
 
   return data ?? [];
+}
+
+export async function getFinancialRecords(): Promise<FinancialRecord[]> {
+  const ctx = await getAuthedSupabase();
+
+  if (!ctx) {
+    return [];
+  }
+
+  const { data, error } = await ctx.supabase
+    .from("financial_records")
+    .select("*")
+    .eq("user_id", ctx.user.id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    return [];
+  }
+
+  return (data ?? []).map((record) => ({
+    id: record.id,
+    userId: record.user_id,
+    type: record.record_type,
+    label: record.label,
+    providerName: record.provider_name,
+    productName: record.product_name ?? null,
+    referenceNumber: record.reference_number ?? null,
+    currency: record.currency ?? "GHS",
+    monthlyContribution: record.monthly_contribution
+      ? parseAmount(record.monthly_contribution)
+      : null,
+    currentValue: record.current_value ? parseAmount(record.current_value) : null,
+    coverageAmount: record.coverage_amount
+      ? parseAmount(record.coverage_amount)
+      : null,
+    startDate: record.start_date ?? null,
+    maturityDate: record.maturity_date ?? null,
+    contactPerson: record.contact_person ?? null,
+    contactPhone: record.contact_phone ?? null,
+    notes: record.notes ?? null,
+  }));
+}
+
+export async function getFinancialRecord(
+  recordId: string,
+): Promise<FinancialRecord | null> {
+  const records = await getFinancialRecords();
+  return records.find((record) => record.id === recordId) ?? null;
 }
 
 export async function getExportBundle(): Promise<ExportBundle> {

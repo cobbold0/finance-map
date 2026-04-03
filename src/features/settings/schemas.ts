@@ -28,3 +28,33 @@ export const bankAccountSchema = z.object({
   notes: z.string().optional(),
   isPrimary: z.boolean(),
 });
+
+export const budgetCategorySchema = z.object({
+  name: z.string().min(2),
+  color: z.string().optional(),
+  icon: z.string().optional(),
+});
+
+export const financialRecordSchema = z.object({
+  type: z.enum([
+    "pension_tier_1",
+    "pension_tier_2",
+    "pension_tier_3",
+    "investment",
+    "insurance",
+    "other",
+  ]),
+  label: z.string().min(2),
+  providerName: z.string().min(2),
+  productName: z.string().optional(),
+  referenceNumber: z.string().optional(),
+  currency: z.string().min(3),
+  monthlyContribution: z.number().min(0).nullable(),
+  currentValue: z.number().min(0).nullable(),
+  coverageAmount: z.number().min(0).nullable(),
+  startDate: z.string().optional(),
+  maturityDate: z.string().optional(),
+  contactPerson: z.string().optional(),
+  contactPhone: z.string().optional(),
+  notes: z.string().optional(),
+});

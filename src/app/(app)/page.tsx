@@ -26,10 +26,11 @@ export default async function DashboardPage() {
         }
       />
 
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
         <MetricCard title="Total balance" value={snapshot.totalBalanceBase} currency={currency} trend="up" />
         <MetricCard title="Income" value={snapshot.totalIncomeBase} currency={currency} trend="up" />
         <MetricCard title="Expense" value={snapshot.totalExpenseBase} currency={currency} trend="down" />
+        <MetricCard title="Investments" value={snapshot.totalInvestmentsBase} currency={currency} trend="up" />
         <MetricCard title="Savings rate" value={snapshot.savingsRate} currency={currency} />
       </section>
 

@@ -42,6 +42,13 @@ export type ReminderFrequency =
   | "quarterly"
   | "yearly";
 export type BudgetWarningState = "healthy" | "watch" | "exceeded";
+export type FinancialRecordType =
+  | "pension_tier_1"
+  | "pension_tier_2"
+  | "pension_tier_3"
+  | "investment"
+  | "insurance"
+  | "other";
 
 export interface UserProfile {
   id: string;
@@ -210,6 +217,25 @@ export interface BankAccountDetail {
   isPrimary: boolean;
 }
 
+export interface FinancialRecord {
+  id: string;
+  userId: string;
+  type: FinancialRecordType;
+  label: string;
+  providerName: string;
+  productName: string | null;
+  referenceNumber: string | null;
+  currency: CurrencyCode;
+  monthlyContribution: number | null;
+  currentValue: number | null;
+  coverageAmount: number | null;
+  startDate: string | null;
+  maturityDate: string | null;
+  contactPerson: string | null;
+  contactPhone: string | null;
+  notes: string | null;
+}
+
 export interface AuditLog {
   id: string;
   userId: string;
@@ -242,6 +268,7 @@ export interface DashboardSnapshot {
   totalBalanceBase: number;
   totalIncomeBase: number;
   totalExpenseBase: number;
+  totalInvestmentsBase: number;
   savingsRate: number;
   walletCount: number;
   quickWallets: Wallet[];

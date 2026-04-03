@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import {
   bankAccountSchema,
+  budgetCategorySchema,
+  financialRecordSchema,
   notificationPreferencesSchema,
   profileSettingsSchema,
 } from "@/features/settings/schemas";
@@ -141,5 +143,183 @@ export async function saveBankAccountAction(values: unknown, bankAccountId?: str
   }
 
   revalidatePath("/settings/bank-accounts");
+  return { success: true };
+}
+
+export async function saveBudgetCategoryAction(
+  values: unknown,
+  categoryId?: string,
+) {
+  const payload = budgetCategorySchema.safeParse(values);
+
+  if (!payload.success) {
+    return {
+      error:
+        payload.error.issues[0]?.message ?? "Invalid budget category.",
+    };
+  }
+
+  const supabase = await createClient();
+
+  if (!supabase) {
+    return { error: "Supabase is not configured." };
+  }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Please sign in again." };
+  }
+
+  const record = {
+    user_id: user.id,
+    name: payload.data.name,
+    color: payload.data.color || null,
+    icon: payload.data.icon || null,
+  };
+
+  const query = categoryId
+    ? supabase
+        .from("budget_categories")
+        .update(record)
+        .eq("id", categoryId)
+        .eq("user_id", user.id)
+    : supabase.from("budget_categories").insert(record);
+
+  const { error } = await query;
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  revalidatePath("/settings");
+  revalidatePath("/settings/budget-categories");
+  revalidatePath("/budgets/new");
+  return { success: true };
+}
+
+export async function deleteBudgetCategoryAction(categoryId: string) {
+  const supabase = await createClient();
+
+  if (!supabase) {
+    return { error: "Supabase is not configured." };
+  }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Please sign in again." };
+  }
+
+  const { error } = await supabase
+    .from("budget_categories")
+    .delete()
+    .eq("id", categoryId)
+    .eq("user_id", user.id);
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  revalidatePath("/settings/budget-categories");
+  revalidatePath("/budgets/new");
+  revalidatePath("/budgets");
+  return { success: true };
+}
+
+export async function saveFinancialRecordAction(
+  values: unknown,
+  recordId?: string,
+) {
+  const payload = financialRecordSchema.safeParse(values);
+
+  if (!payload.success) {
+    return {
+      error: payload.error.issues[0]?.message ?? "Invalid financial record.",
+    };
+  }
+
+  const supabase = await createClient();
+
+  if (!supabase) {
+    return { error: "Supabase is not configured." };
+  }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Please sign in again." };
+  }
+
+  const record = {
+    user_id: user.id,
+    record_type: payload.data.type,
+    label: payload.data.label,
+    provider_name: payload.data.providerName,
+    product_name: payload.data.productName || null,
+    reference_number: payload.data.referenceNumber || null,
+    currency: payload.data.currency,
+    monthly_contribution: payload.data.monthlyContribution,
+    current_value: payload.data.currentValue,
+    coverage_amount: payload.data.coverageAmount,
+    start_date: payload.data.startDate || null,
+    maturity_date: payload.data.maturityDate || null,
+    contact_person: payload.data.contactPerson || null,
+    contact_phone: payload.data.contactPhone || null,
+    notes: payload.data.notes || null,
+  };
+
+  const query = recordId
+    ? supabase
+        .from("financial_records")
+        .update(record)
+        .eq("id", recordId)
+        .eq("user_id", user.id)
+    : supabase.from("financial_records").insert(record);
+
+  const { error } = await query;
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  revalidatePath("/settings");
+  revalidatePath("/settings/financial-records");
+  return { success: true };
+}
+
+export async function deleteFinancialRecordAction(recordId: string) {
+  const supabase = await createClient();
+
+  if (!supabase) {
+    return { error: "Supabase is not configured." };
+  }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Please sign in again." };
+  }
+
+  const { error } = await supabase
+    .from("financial_records")
+    .delete()
+    .eq("id", recordId)
+    .eq("user_id", user.id);
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  revalidatePath("/settings/financial-records");
+  revalidatePath("/settings");
   return { success: true };
 }

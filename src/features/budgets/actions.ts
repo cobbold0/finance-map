@@ -120,7 +120,7 @@ export async function createStarterBudgetCategoriesAction() {
     const { error } = await supabase.from("budget_categories").insert(rowsToInsert);
 
     if (error) {
-      return { error: error.message };
+      redirect("/budgets/new");
     }
   }
 

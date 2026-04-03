@@ -17,6 +17,8 @@ export default function SettingsPage() {
         {[
           ["Profile & preferences", "/settings/profile"],
           ["Notification preferences", "/settings/preferences"],
+          ["Financial records", "/settings/financial-records"],
+          ["Budget categories", "/settings/budget-categories"],
           ["Bank account details", "/settings/bank-accounts"],
           ["Import / export", "/settings/import-export"],
         ].map(([label, href]) => (
