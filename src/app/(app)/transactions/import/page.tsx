@@ -7,14 +7,13 @@ export default function TransactionsImportPage() {
       <PageHeader
         eyebrow="Import"
         title="Import transactions from CSV"
-        description="CSV import is wired into the architecture here; the next refinement step is parser preview, field mapping, and batch commit UX."
+        description="Import historical transactions from CSV into your wallet-first ledger."
       />
       <Card>
         <CardContent className="space-y-3">
           <p className="text-sm leading-6 text-muted-foreground">
-            Drop in a CSV parser UI here using the existing data layer. The route
-            and architecture are ready for transaction preview, validation, and
-            save flows.
+            Use this screen to review mapped rows, validate transaction fields,
+            and commit imports safely into your existing wallets.
           </p>
         </CardContent>
       </Card>
