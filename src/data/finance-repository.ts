@@ -388,8 +388,46 @@ export async function getReminders(): Promise<Reminder[]> {
     scheduledFor: reminder.scheduled_date ?? null,
     status: reminder.is_enabled ? "scheduled" : "dismissed",
     frequency: reminder.frequency ?? null,
-    lastTriggeredAt: null,
+    lastTriggeredAt: reminder.last_triggered_at ?? null,
   }));
+}
+
+export async function getNotificationDeliveries() {
+  const ctx = await getAuthedSupabase();
+
+  if (!ctx) {
+    return [];
+  }
+
+  const { data } = await ctx.supabase
+    .from("notification_deliveries")
+    .select("id, channel, status, scheduled_for, sent_at, error_message, reminder_id, reminders(title)")
+    .eq("user_id", ctx.user.id)
+    .order("created_at", { ascending: false })
+    .limit(8);
+
+  return (data ?? []).map((delivery) => {
+    const reminderRelationship = delivery as {
+      reminders?:
+        | Array<{ title?: string }>
+        | {
+            title?: string;
+          }
+        | null;
+    };
+
+    return {
+      id: delivery.id,
+      channel: delivery.channel,
+      status: delivery.status,
+      scheduledFor: delivery.scheduled_for,
+      sentAt: delivery.sent_at,
+      errorMessage: delivery.error_message,
+      reminderTitle: Array.isArray(reminderRelationship.reminders)
+        ? reminderRelationship.reminders[0]?.title ?? null
+        : reminderRelationship.reminders?.title ?? null,
+    };
+  });
 }
 
 export async function getNotificationPreferences(): Promise<NotificationPreference | null> {

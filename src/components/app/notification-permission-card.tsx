@@ -5,7 +5,10 @@ import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { usePwaStatus } from "@/hooks/use-pwa-status";
-import { requestBrowserNotificationPermission } from "@/lib/pwa";
+import {
+  ensurePushSubscription,
+  requestBrowserNotificationPermission,
+} from "@/lib/pwa";
 import { useUiStore } from "@/stores/ui-store";
 
 export function NotificationPermissionCard() {
@@ -45,6 +48,13 @@ export function NotificationPermissionCard() {
               const nextPermission = await requestBrowserNotificationPermission();
 
               if (nextPermission === "granted") {
+                const result = await ensurePushSubscription();
+
+                if (result.error) {
+                  toast.error(result.error);
+                  return;
+                }
+
                 toast.success("Browser notifications enabled.");
                 setVisible(false);
                 return;

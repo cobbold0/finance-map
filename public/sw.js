@@ -1,6 +1,19 @@
-const APP_CACHE = "finance-map-app-v2";
-const RUNTIME_CACHE = "finance-map-runtime-v2";
+const APP_CACHE = "finance-map-app-v3";
+const RUNTIME_CACHE = "finance-map-runtime-v3";
 const APP_SHELL_ROUTES = ["/", "/offline", "/manifest.webmanifest", "/icon"];
+
+function buildNotificationOptions(notification) {
+  return {
+    body: notification.body,
+    icon: notification.icon || "/icon",
+    badge: notification.badge || "/icon",
+    tag: notification.tag,
+    data: {
+      url: notification.url || "/notifications",
+    },
+    requireInteraction: Boolean(notification.requireInteraction),
+  };
+}
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -112,18 +125,45 @@ self.addEventListener("message", (event) => {
     const notification = payload.notification;
 
     event.waitUntil(
-      self.registration.showNotification(notification.title, {
-        body: notification.body,
-        icon: notification.icon || "/icon",
-        badge: notification.badge || "/icon",
-        tag: notification.tag,
-        data: {
-          url: notification.url || "/notifications",
-        },
-        requireInteraction: Boolean(notification.requireInteraction),
-      }),
+      self.registration.showNotification(
+        notification.title,
+        buildNotificationOptions(notification),
+      ),
     );
   }
+});
+
+self.addEventListener("push", (event) => {
+  if (!event.data) {
+    return;
+  }
+
+  let payload = null;
+
+  try {
+    payload = event.data.json();
+  } catch {
+    payload = {
+      title: "Finance Map alert",
+      body: event.data.text(),
+      url: "/notifications",
+    };
+  }
+
+  if (!payload?.title) {
+    payload = {
+      title: "Finance Map alert",
+      body: payload?.body || "You have a new finance reminder.",
+      url: payload?.url || "/notifications",
+    };
+  }
+
+  event.waitUntil(
+    self.registration.showNotification(
+      payload.title,
+      buildNotificationOptions(payload),
+    ),
+  );
 });
 
 self.addEventListener("notificationclick", (event) => {

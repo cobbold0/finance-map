@@ -53,6 +53,7 @@ Implemented baseline screens and architecture:
 - Install prompt and browser notification permission prompt
 - Explicit `public/sw.js` registration with offline shell fallback and notification click handling
 - Mobile bottom tab navigation and desktop sidebar shell
+- Push subscription storage and a scheduled sender Edge Function path
 
 ## Running Locally
 
@@ -76,13 +77,25 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=...
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-4. Start development:
+4. Generate VAPID keys for push notifications:
+
+```bash
+node scripts/generate-vapid-keys.mjs
+```
+
+5. Add the public key to `.env.local`:
+
+```bash
+NEXT_PUBLIC_VAPID_PUBLIC_KEY=...
+```
+
+6. Start development:
 
 ```bash
 pnpm dev
 ```
 
-5. Verify production build:
+7. Verify production build:
 
 ```bash
 pnpm build
@@ -96,6 +109,8 @@ The app uses the existing finance schema plus an additional migration for:
 - `bank_account_details`
 - `exchange_rates`
 - `audit_logs`
+- `push_subscriptions`
+- `notification_deliveries`
 - `increment_wallet_balance(...)` helper function
 
 Push pending migrations with:
@@ -118,17 +133,54 @@ can be added without restructuring the screens.
 
 ## Important Caveats
 
-- Browser notifications are implemented as local/browser notifications with service-worker delivery, not server push subscriptions yet.
+- Browser notifications now support push subscription registration, but scheduled delivery still depends on deploying the Edge Function and setting VAPID secrets.
 - CSV import has an entry route and architecture slot, but the full preview/mapping workflow is the next implementation step.
 - Reports currently use existing transactional data and are ready for richer rollups once more seeded/live data is available.
 
 ## PWA And Notifications
 
 - `public/sw.js`
-  App-shell caching, navigation fallback to `/offline`, runtime asset caching, and notification click routing.
+  App-shell caching, navigation fallback to `/offline`, runtime asset caching, notification click routing, and `push` event handling.
 - `src/lib/pwa.ts`
-  Centralized browser notification and service-worker helpers.
+  Centralized browser notification, push subscription, and service-worker helpers.
 - `src/components/providers/pwa-provider.tsx`
   Registers the service worker and keeps browser permission state in sync.
+- `supabase/functions/send-due-notifications/index.ts`
+  Scheduled backend sender for due reminders using Web Push.
+- `scripts/generate-vapid-keys.mjs`
+  Generates a compatible VAPID public/private key pair for browser push delivery.
 - Development note:
   Service worker registration is production-only by default. Set `NEXT_PUBLIC_ENABLE_PWA_DEV=true` if you want to test registration locally.
+
+## Push Delivery Setup
+
+1. Generate VAPID keys:
+
+```bash
+node scripts/generate-vapid-keys.mjs
+```
+
+2. Put the public key in `.env.local`:
+
+```bash
+NEXT_PUBLIC_VAPID_PUBLIC_KEY=...
+```
+
+3. Set Edge Function secrets in Supabase:
+
+```bash
+supabase secrets set VAPID_PUBLIC_KEY=...
+supabase secrets set VAPID_PRIVATE_KEY=...
+supabase secrets set VAPID_SUBJECT=mailto:you@example.com
+```
+
+4. Deploy the sender function:
+
+```bash
+supabase functions deploy send-due-notifications
+```
+
+5. Schedule it from Supabase:
+- run it every 5-15 minutes
+- point the scheduler to `send-due-notifications`
+- the function will look for due reminders, skip already-sent deliveries, and send Web Push to saved subscriptions

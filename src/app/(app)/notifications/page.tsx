@@ -1,12 +1,17 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { PageHeader } from "@/components/app/page-header";
-import { getNotificationPreferences, getReminders } from "@/data/finance-repository";
+import {
+  getNotificationDeliveries,
+  getNotificationPreferences,
+  getReminders,
+} from "@/data/finance-repository";
 import { NotificationActionsCard } from "@/features/notifications/notification-actions-card";
 
 export default async function NotificationsPage() {
-  const [preferences, reminders] = await Promise.all([
+  const [preferences, reminders, deliveries] = await Promise.all([
     getNotificationPreferences(),
     getReminders(),
+    getNotificationDeliveries(),
   ]);
 
   return (
@@ -16,6 +21,7 @@ export default async function NotificationsPage() {
         title="Smart reminders and preferences"
         description="Prepare for in-app and browser notification flows without changing the data model later."
       />
+      <NotificationActionsCard nextReminder={reminders[0]} />
       <Card>
         <CardContent className="space-y-3">
           <h2 className="text-lg font-semibold">Reminder stream</h2>
@@ -37,6 +43,40 @@ export default async function NotificationsPage() {
           <p className="text-sm text-muted-foreground">
             Browser notifications: {preferences?.browserEnabled ? "enabled" : "disabled"}
           </p>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardContent className="space-y-3">
+          <h2 className="text-lg font-semibold">Recent delivery diagnostics</h2>
+          {deliveries.length ? (
+            deliveries.map((delivery) => (
+              <div
+                key={delivery.id}
+                className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3"
+              >
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <p className="font-medium">
+                      {delivery.reminderTitle ?? "Reminder delivery"}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {delivery.channel} · scheduled {delivery.scheduledFor ?? "n/a"}
+                    </p>
+                  </div>
+                  <p className="text-sm font-medium uppercase tracking-[0.15em] text-muted-foreground">
+                    {delivery.status}
+                  </p>
+                </div>
+                {delivery.errorMessage ? (
+                  <p className="mt-2 text-sm text-red-300">{delivery.errorMessage}</p>
+                ) : null}
+              </div>
+            ))
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              No delivery attempts logged yet.
+            </p>
+          )}
         </CardContent>
       </Card>
     </div>

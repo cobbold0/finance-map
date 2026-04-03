@@ -8,7 +8,11 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { saveNotificationPreferencesAction } from "@/features/settings/actions";
 import { notificationPreferencesSchema } from "@/features/settings/schemas";
-import { requestBrowserNotificationPermission } from "@/lib/pwa";
+import {
+  ensurePushSubscription,
+  removePushSubscription,
+  requestBrowserNotificationPermission,
+} from "@/lib/pwa";
 import { Button } from "@/components/ui/button";
 
 type NotificationPreferenceValues = z.infer<
@@ -84,6 +88,20 @@ export function NotificationPreferencesForm({
 
             if (permission === "denied") {
               toast.error("Allow browser notifications to enable reminder delivery.");
+              return;
+            }
+
+            const pushResult = await ensurePushSubscription();
+
+            if (pushResult.error) {
+              toast.error(pushResult.error);
+              return;
+            }
+          } else {
+            const removeResult = await removePushSubscription();
+
+            if (removeResult.error) {
+              toast.error(removeResult.error);
               return;
             }
           }

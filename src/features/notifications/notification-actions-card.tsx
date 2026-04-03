@@ -5,6 +5,8 @@ import { toast } from "sonner";
 import { Reminder } from "@/domain/models";
 import { usePwaStatus } from "@/hooks/use-pwa-status";
 import {
+  ensurePushSubscription,
+  removePushSubscription,
   requestBrowserNotificationPermission,
   sendBrowserNotification,
 } from "@/lib/pwa";
@@ -24,6 +26,18 @@ function getPermissionLabel(permission: string) {
   }
 }
 
+function getPushLabel(status: ReturnType<typeof usePwaStatus>) {
+  if (!status.isPushSupported) {
+    return "Unsupported";
+  }
+
+  if (!status.isPushConfigured) {
+    return "Not configured";
+  }
+
+  return status.isSubscribed ? "Registered" : "Not subscribed";
+}
+
 export function NotificationActionsCard({
   nextReminder,
 }: {
@@ -35,6 +49,13 @@ export function NotificationActionsCard({
     const permission = await requestBrowserNotificationPermission();
 
     if (permission === "granted") {
+      const result = await ensurePushSubscription();
+
+      if (result.error) {
+        toast.error(result.error);
+        return;
+      }
+
       toast.success("Browser notifications are ready.");
       return;
     }
@@ -85,6 +106,35 @@ export function NotificationActionsCard({
     toast.success("Reminder preview sent.");
   };
 
+  const registerPush = async () => {
+    const permission = await requestBrowserNotificationPermission();
+
+    if (permission !== "granted") {
+      toast.error("Browser notification permission is required first.");
+      return;
+    }
+
+    const result = await ensurePushSubscription();
+
+    if (result.error) {
+      toast.error(result.error);
+      return;
+    }
+
+    toast.success("This browser is now registered for future push delivery.");
+  };
+
+  const disconnectPush = async () => {
+    const result = await removePushSubscription();
+
+    if (result.error) {
+      toast.error(result.error);
+      return;
+    }
+
+    toast.success("Push subscription removed from this browser.");
+  };
+
   return (
     <Card>
       <CardContent className="space-y-4">
@@ -122,17 +172,27 @@ export function NotificationActionsCard({
           <div className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
             <div className="flex items-center gap-2 text-sm font-medium">
               <Send className="h-4 w-4 text-primary" />
-              Next reminder
+              Push subscription
             </div>
             <p className="mt-2 text-sm text-muted-foreground">
-              {nextReminder?.title ?? "No reminder scheduled"}
+              {getPushLabel(status)}
             </p>
           </div>
+        </div>
+
+        <div className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
+          <p className="text-sm font-medium">Upcoming reminder</p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {nextReminder?.title ?? "No reminder scheduled"}
+          </p>
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row">
           <Button type="button" variant="secondary" onClick={requestPermission}>
             Request permission
+          </Button>
+          <Button type="button" variant="secondary" onClick={registerPush}>
+            Register push
           </Button>
           <Button type="button" onClick={sendTestNotification}>
             Send test alert
@@ -140,6 +200,11 @@ export function NotificationActionsCard({
           <Button type="button" variant="ghost" onClick={sendReminderPreview}>
             Preview next reminder
           </Button>
+          {status.isSubscribed ? (
+            <Button type="button" variant="ghost" onClick={disconnectPush}>
+              Remove push
+            </Button>
+          ) : null}
         </div>
       </CardContent>
     </Card>
