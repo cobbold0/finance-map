@@ -13,13 +13,13 @@ export const mobileTabs = [
   { title: "Wallets", href: "/wallets", icon: Wallet },
   { title: "Transactions", href: "/transactions", icon: CreditCard },
   { title: "Goals", href: "/goals", icon: Goal },
+  { title: "Reports", href: "/reports", icon: PieChart },
   { title: "Settings", href: "/settings", icon: Settings },
 ] as const;
 
 export const desktopNav = [
   ...mobileTabs,
   { title: "Budgets", href: "/budgets", icon: PieChart },
-  { title: "Reports", href: "/reports", icon: PieChart },
   { title: "Notifications", href: "/notifications", icon: Bell },
 ] as const;
 
