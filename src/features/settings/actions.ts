@@ -4,14 +4,15 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import {
   bankAccountSchema,
-  preferencesSchema,
+  notificationPreferencesSchema,
+  profileSettingsSchema,
 } from "@/features/settings/schemas";
 
-export async function savePreferencesAction(values: unknown) {
-  const payload = preferencesSchema.safeParse(values);
+export async function saveProfileSettingsAction(values: unknown) {
+  const payload = profileSettingsSchema.safeParse(values);
 
   if (!payload.success) {
-    return { error: payload.error.issues[0]?.message ?? "Invalid preferences." };
+    return { error: payload.error.issues[0]?.message ?? "Invalid profile settings." };
   }
 
   const supabase = await createClient();
@@ -41,11 +42,41 @@ export async function savePreferencesAction(values: unknown) {
     salary_date: payload.data.salaryDate,
   });
 
+  revalidatePath("/settings");
+  revalidatePath("/settings/profile");
+  revalidatePath("/");
+  return { success: true };
+}
+
+export async function saveNotificationPreferencesAction(values: unknown) {
+  const payload = notificationPreferencesSchema.safeParse(values);
+
+  if (!payload.success) {
+    return {
+      error:
+        payload.error.issues[0]?.message ?? "Invalid notification preferences.",
+    };
+  }
+
+  const supabase = await createClient();
+
+  if (!supabase) {
+    return { error: "Supabase is not configured." };
+  }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Please sign in again." };
+  }
+
   await supabase.from("notification_preferences").upsert({
     user_id: user.id,
     salary_reminder: payload.data.salaryReminder,
-    bonus_reminder: true,
-    milestone_reminder: true,
+    bonus_reminder: payload.data.bonusReminder,
+    milestone_reminder: payload.data.milestoneReminder,
     monthly_review_reminder: payload.data.monthlyReviewReminder,
     budget_warning: payload.data.budgetWarningReminder,
     reconciliation_reminder: payload.data.reconciliationReminder,
@@ -54,6 +85,7 @@ export async function savePreferencesAction(values: unknown) {
   });
 
   revalidatePath("/settings");
+  revalidatePath("/settings/preferences");
   revalidatePath("/notifications");
   revalidatePath("/");
   return { success: true };

@@ -1,5 +1,5 @@
 -- Seed Demo Data for Finance Map
--- Rerunnable seed that populates a realistic wallet-first finance workspace.
+-- One-off remote seed migration for the linked project.
 
 DO $$
 DECLARE
@@ -24,7 +24,7 @@ BEGIN
   LIMIT 1;
 
   IF demo_user_id IS NULL THEN
-    RAISE EXCEPTION 'No auth.users row found. Create a user before running seed-demo-data.sql.';
+    RAISE EXCEPTION 'No auth.users row found. Create a user before running seed migration.';
   END IF;
 
   INSERT INTO public.profiles (id, email, full_name, currency, theme_preference)

@@ -80,6 +80,25 @@ export async function getCurrentUserProfile(): Promise<UserProfile | null> {
   };
 }
 
+export async function getUserSettings(): Promise<{ salaryDate: number | null }> {
+  const ctx = await getAuthedSupabase();
+
+  if (!ctx) {
+    return { salaryDate: null };
+  }
+
+  const { data } = await ctx.supabase
+    .from("settings")
+    .select("salary_date")
+    .eq("user_id", ctx.user.id)
+    .maybeSingle();
+
+  return {
+    salaryDate:
+      typeof data?.salary_date === "number" ? data.salary_date : null,
+  };
+}
+
 export async function getWallets(): Promise<Wallet[]> {
   const ctx = await getAuthedSupabase();
 

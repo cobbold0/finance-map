@@ -16,7 +16,6 @@ export default async function NotificationsPage() {
         title="Smart reminders and preferences"
         description="Prepare for in-app and browser notification flows without changing the data model later."
       />
-      <NotificationActionsCard nextReminder={reminders[0]} />
       <Card>
         <CardContent className="space-y-3">
           <h2 className="text-lg font-semibold">Reminder stream</h2>
