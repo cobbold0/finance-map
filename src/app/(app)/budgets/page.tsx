@@ -68,7 +68,7 @@ export default async function BudgetsPage() {
       ) : (
         <EmptyState
           title="No monthly budget yet"
-          description="Create or seed a monthly budget to unlock category warnings, progress bars, and actual-versus-plan tracking."
+          description="Create a monthly budget to track category limits, spending progress, and warning states."
         />
       )}
     </div>

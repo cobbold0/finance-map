@@ -38,7 +38,7 @@ export function InstallPromptCard() {
         <div className="space-y-1">
           <p className="text-sm font-semibold">Install Finance Map</p>
           <p className="text-sm text-muted-foreground">
-            Add the app to your home screen for a more native wallet experience.
+            Add the app to your home screen for faster access.
           </p>
         </div>
         <div className="flex gap-2">

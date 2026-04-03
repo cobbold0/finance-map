@@ -23,8 +23,8 @@ export default async function SettingsPreferencesPage() {
           <div className="space-y-1">
             <h2 className="text-lg font-semibold">Reminder controls</h2>
             <p className="text-sm text-muted-foreground">
-              Fine-tune what Finance Map should surface as salary, goal, budget,
-              and reconciliation nudges.
+              Choose which reminders you want to receive for income, goals,
+              budgets, and reconciliation.
             </p>
           </div>
           <NotificationPreferencesForm

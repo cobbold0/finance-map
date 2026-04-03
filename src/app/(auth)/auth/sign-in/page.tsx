@@ -15,9 +15,7 @@ export default async function SignInPage() {
             <LogoMark />
             <div>
               <p className="font-semibold">Sign in</p>
-              <p className="text-sm text-muted-foreground">
-                Welcome back to Finance Map.
-              </p>
+              <p className="text-sm text-muted-foreground">Access your account.</p>
             </div>
           </div>
           <SignInForm />

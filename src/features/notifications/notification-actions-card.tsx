@@ -71,7 +71,7 @@ export function NotificationActionsCard({
   const sendTestNotification = async () => {
     const delivered = await sendBrowserNotification({
       title: "Finance Map test alert",
-      body: "Notifications are active for reminders, budget warnings, and monthly reviews.",
+      body: "Notifications are enabled for reminders and alerts.",
       tag: "finance-map-test",
       url: "/notifications",
     });
@@ -141,8 +141,8 @@ export function NotificationActionsCard({
         <div className="space-y-2">
           <h2 className="text-lg font-semibold">Browser delivery</h2>
           <p className="text-sm text-muted-foreground">
-            Service worker registration and local notification delivery are now
-            wired for installable-PWA flows.
+            Check permission, device registration, and reminder delivery for
+            this browser.
           </p>
         </div>
 

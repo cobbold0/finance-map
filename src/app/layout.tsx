@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Finance Map",
-  description: "A mobile-first personal finance operating system.",
+  description: "Personal finance tracking for wallets, budgets, goals, and reports.",
 };
 
 export default function RootLayout({

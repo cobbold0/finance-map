@@ -1,14 +1,17 @@
 import Link from "next/link";
+import { LogOut } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/app/page-header";
+import { signOutAction } from "@/features/auth/actions";
 
 export default function SettingsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
         eyebrow="Settings"
-        title="Preferences and configuration"
-        description="Manage profile, currency, notifications, bank details, and data portability."
+        title="Settings"
+        description="Manage your profile, currency, notifications, bank details, and exports."
       />
       <div className="grid gap-4 md:grid-cols-2">
         {[
@@ -22,13 +25,29 @@ export default function SettingsPage() {
               <CardContent className="space-y-2">
                 <p className="text-lg font-semibold">{label}</p>
                 <p className="text-sm text-muted-foreground">
-                  Open this area to configure the product around your financial workflow.
+                  Review and update this part of your account.
                 </p>
               </CardContent>
             </Card>
           </Link>
         ))}
       </div>
+      <Card>
+        <CardContent className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="space-y-1">
+            <p className="text-lg font-semibold">Session</p>
+            <p className="text-sm text-muted-foreground">
+              Sign out of this device when you are done managing your account.
+            </p>
+          </div>
+          <form action={signOutAction}>
+            <Button type="submit" variant="outline" className="w-full sm:w-auto">
+              <LogOut className="h-4 w-4" />
+              Sign out
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }

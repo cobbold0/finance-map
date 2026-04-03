@@ -6,7 +6,6 @@ import { Plus } from "lucide-react";
 import { desktopNav, mobileTabs, quickActions } from "@/config/navigation";
 import { LogoMark } from "@/components/app/logo-mark";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useUiStore } from "@/stores/ui-store";
 
@@ -20,7 +19,7 @@ export function DesktopSidebar() {
           <LogoMark />
           <div>
             <p className="text-sm font-semibold">Finance Map</p>
-            <p className="text-xs text-muted-foreground">Personal finance OS</p>
+            <p className="text-xs text-muted-foreground">Personal finance</p>
           </div>
         </div>
         <nav className="space-y-2">
@@ -45,15 +44,6 @@ export function DesktopSidebar() {
             );
           })}
         </nav>
-        <Card className="mt-auto">
-          <CardContent className="space-y-2">
-            <p className="text-sm font-semibold">Ready for production growth</p>
-            <p className="text-sm leading-6 text-muted-foreground">
-              Auth, budgets, goals, imports, reports, and notifications all share
-              the same scalable shell.
-            </p>
-          </CardContent>
-        </Card>
       </div>
     </aside>
   );

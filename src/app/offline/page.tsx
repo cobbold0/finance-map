@@ -7,8 +7,8 @@ export default function OfflinePage() {
         </p>
         <h1 className="text-3xl font-semibold">You are offline right now.</h1>
         <p className="text-sm leading-6 text-muted-foreground">
-          Finance Map can still show the app shell while your connection is away.
-          Reconnect to sync balances, reports, and recent activity.
+          Some information may still be available while you are offline.
+          Reconnect to load the latest balances, reports, and activity.
         </p>
       </div>
     </main>

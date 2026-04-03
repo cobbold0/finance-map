@@ -17,19 +17,16 @@ export default async function WelcomePage() {
               <LogoMark />
               <div>
                 <p className="font-semibold">Finance Map</p>
-                <p className="text-sm text-muted-foreground">
-                  A personal finance operating system
-                </p>
+                <p className="text-sm text-muted-foreground">Personal finance</p>
               </div>
             </div>
             <div className="space-y-4">
               <h1 className="max-w-3xl text-4xl font-semibold tracking-tight md:text-6xl">
-                Calm money management across wallets, budgets, goals, and reports.
+                Track your money across wallets, budgets, goals, and reports.
               </h1>
               <p className="max-w-2xl text-base leading-7 text-muted-foreground md:text-lg">
-                Finance Map is built for mobile-first financial clarity, with a
-                polished PWA shell, structured data, and room to grow into sync,
-                analytics, and collaboration.
+                Keep balances, spending, goals, and reminders in one place with
+                a clean experience built for everyday use.
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
@@ -49,11 +46,11 @@ export default async function WelcomePage() {
               <CardContent className="space-y-3">
                 <div className="flex items-center gap-2 text-sm font-semibold">
                   <Smartphone className="h-4 w-4 text-primary" />
-                  Mobile-first shell
+                  Easy to use on mobile
                 </div>
                 <p className="text-sm leading-6 text-muted-foreground">
-                  Fixed bottom tabs, reachable actions, and a dashboard that still
-                  expands cleanly onto tablet and desktop.
+                  Reach key actions quickly on your phone, with a layout that
+                  also works well on tablet and desktop.
                 </p>
               </CardContent>
             </Card>
@@ -61,11 +58,11 @@ export default async function WelcomePage() {
               <CardContent className="space-y-3">
                 <div className="flex items-center gap-2 text-sm font-semibold">
                   <ShieldCheck className="h-4 w-4 text-primary" />
-                  Trustworthy structure
+                  Clear financial records
                 </div>
                 <p className="text-sm leading-6 text-muted-foreground">
-                  Wallet-first architecture, transaction audit trails, goals,
-                  budget warnings, reports, reminders, and bank account details.
+                  Review transactions, budgets, goals, reminders, and bank
+                  details in a single organized workspace.
                 </p>
               </CardContent>
             </Card>

@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Finance Map",
     short_name: "Finance Map",
-    description: "A mobile-first personal finance operating system.",
+    description: "Personal finance tracking for wallets, budgets, goals, and reports.",
     start_url: "/",
     scope: "/",
     display: "standalone",
