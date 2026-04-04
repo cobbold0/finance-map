@@ -1,7 +1,8 @@
 const SHELL_CACHE = "finance-map-shell-v4";
 const PAGE_CACHE = "finance-map-pages-v4";
+const DATA_CACHE = "finance-map-data-v4";
 const STATIC_CACHE = "finance-map-static-v4";
-const CACHE_NAMES = [SHELL_CACHE, PAGE_CACHE, STATIC_CACHE];
+const CACHE_NAMES = [SHELL_CACHE, PAGE_CACHE, DATA_CACHE, STATIC_CACHE];
 const PRECACHE_URLS = [
   "/",
   "/offline",
@@ -58,6 +59,10 @@ async function putInCache(cacheName, request, response) {
     await trimCache(PAGE_CACHE, 30);
   }
 
+  if (cacheName === DATA_CACHE) {
+    await trimCache(DATA_CACHE, 60);
+  }
+
   if (cacheName === STATIC_CACHE) {
     await trimCache(STATIC_CACHE, 80);
   }
@@ -65,21 +70,35 @@ async function putInCache(cacheName, request, response) {
   return response;
 }
 
+function normalizeRequestKey(request) {
+  const url = new URL(request.url);
+
+  url.searchParams.delete("_rsc");
+
+  return new Request(url.toString(), {
+    method: "GET",
+    headers: {
+      Accept: request.headers.get("Accept") || "*/*",
+    },
+  });
+}
+
 async function handleNavigationRequest(event) {
   const { request } = event;
+  const cacheKey = normalizeRequestKey(request);
   const preloadResponse = await event.preloadResponse;
 
   if (isCacheableResponse(preloadResponse)) {
-    await putInCache(PAGE_CACHE, request, preloadResponse);
+    await putInCache(PAGE_CACHE, cacheKey, preloadResponse);
     return preloadResponse;
   }
 
   try {
     const networkResponse = await fetch(request);
-    await putInCache(PAGE_CACHE, request, networkResponse);
+    await putInCache(PAGE_CACHE, cacheKey, networkResponse);
     return networkResponse;
   } catch {
-    const cachedPage = await caches.match(request);
+    const cachedPage = await caches.match(cacheKey);
 
     if (cachedPage) {
       return cachedPage;
@@ -89,6 +108,26 @@ async function handleNavigationRequest(event) {
 
     if (cachedHome) {
       return cachedHome;
+    }
+
+    return (
+      (await caches.match("/offline")) ||
+      new Response("Offline", { status: 503 })
+    );
+  }
+}
+
+async function handleDataRequest(request) {
+  const cacheKey = normalizeRequestKey(request);
+  const cached = await caches.match(cacheKey);
+
+  try {
+    const networkResponse = await fetch(request);
+    await putInCache(DATA_CACHE, cacheKey, networkResponse);
+    return networkResponse;
+  } catch {
+    if (cached) {
+      return cached;
     }
 
     return (
@@ -156,6 +195,15 @@ self.addEventListener("fetch", (event) => {
 
   if (request.mode === "navigate") {
     event.respondWith(handleNavigationRequest(event));
+    return;
+  }
+
+  if (
+    url.searchParams.has("_rsc") ||
+    request.headers.get("RSC") === "1" ||
+    request.headers.get("Next-Router-Prefetch") === "1"
+  ) {
+    event.respondWith(handleDataRequest(request));
     return;
   }
 
