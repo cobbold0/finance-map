@@ -22,25 +22,38 @@ export interface PwaStatusSnapshot {
   isSupported: boolean;
   isRegistrationEnabled: boolean;
   isRegistered: boolean;
+  isControlled: boolean;
   isPushSupported: boolean;
   isPushConfigured: boolean;
   isSubscribed: boolean;
   permission: BrowserNotificationPermission;
+  offlineCacheStatus: {
+    shellReady: boolean;
+    homeReady: boolean;
+    offlineReady: boolean;
+  };
 }
 
 const defaultSnapshot: PwaStatusSnapshot = {
   isSupported: false,
   isRegistrationEnabled: false,
   isRegistered: false,
+  isControlled: false,
   isPushSupported: false,
   isPushConfigured: false,
   isSubscribed: false,
   permission: "default",
+  offlineCacheStatus: {
+    shellReady: false,
+    homeReady: false,
+    offlineReady: false,
+  },
 };
 
 let snapshot: PwaStatusSnapshot = defaultSnapshot;
 const listeners = new Set<() => void>();
 const FINANCE_MAP_CACHE_PREFIX = "finance-map-";
+const SW_CONTROL_RELOAD_KEY = "finance-map-sw-control-reload";
 
 function emitSnapshot(nextSnapshot: PwaStatusSnapshot) {
   snapshot = nextSnapshot;
@@ -91,6 +104,32 @@ export function isPwaRegistrationEnabled() {
   );
 }
 
+function clearServiceWorkerReloadMarker() {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  window.sessionStorage.removeItem(SW_CONTROL_RELOAD_KEY);
+}
+
+function ensureServiceWorkerControl() {
+  if (
+    typeof window === "undefined" ||
+    !("serviceWorker" in navigator) ||
+    navigator.serviceWorker.controller
+  ) {
+    clearServiceWorkerReloadMarker();
+    return;
+  }
+
+  if (window.sessionStorage.getItem(SW_CONTROL_RELOAD_KEY) === "pending") {
+    return;
+  }
+
+  window.sessionStorage.setItem(SW_CONTROL_RELOAD_KEY, "pending");
+  window.location.reload();
+}
+
 function getVapidPublicKey() {
   return getPublicSupabaseEnv()?.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? null;
 }
@@ -106,6 +145,31 @@ async function clearFinanceMapCaches() {
       .filter((key) => key.startsWith(FINANCE_MAP_CACHE_PREFIX))
       .map((key) => caches.delete(key)),
   );
+}
+
+async function readOfflineCacheStatus() {
+  if (typeof window === "undefined" || !("caches" in window)) {
+    return defaultSnapshot.offlineCacheStatus;
+  }
+
+  const keys = await caches.keys();
+  const shellCacheName = keys.find((key) => key.startsWith("finance-map-shell-"));
+
+  if (!shellCacheName) {
+    return defaultSnapshot.offlineCacheStatus;
+  }
+
+  const shellCache = await caches.open(shellCacheName);
+  const [home, offline] = await Promise.all([
+    shellCache.match("/"),
+    shellCache.match("/offline"),
+  ]);
+
+  return {
+    shellReady: true,
+    homeReady: Boolean(home),
+    offlineReady: Boolean(offline),
+  };
 }
 
 async function cleanupServiceWorkers() {
@@ -163,6 +227,8 @@ async function syncPushSubscriptionStatus(
     isPushSupported: true,
     isPushConfigured: Boolean(vapidPublicKey),
     isSubscribed: Boolean(subscription),
+    isControlled: Boolean(navigator.serviceWorker.controller),
+    offlineCacheStatus: await readOfflineCacheStatus(),
   });
 
   return subscription;
@@ -179,9 +245,11 @@ export async function initializePwa() {
   patchSnapshot({
     isSupported,
     isRegistrationEnabled,
+    isControlled: Boolean(navigator.serviceWorker.controller),
     isPushSupported: isPushSupported(),
     isPushConfigured: Boolean(getVapidPublicKey()),
     permission: getBrowserNotificationPermission(),
+    offlineCacheStatus: await readOfflineCacheStatus(),
   });
 
   if (!isSupported || !isRegistrationEnabled) {
@@ -196,16 +264,33 @@ export async function initializePwa() {
   try {
     const registration = await navigator.serviceWorker.register("/sw.js", {
       scope: "/",
+      updateViaCache: "none",
+    });
+
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      clearServiceWorkerReloadMarker();
+      patchSnapshot({ isControlled: true });
     });
 
     if (registration.waiting) {
       registration.waiting.postMessage({ type: "SKIP_WAITING" });
     }
 
-    patchSnapshot({ isRegistered: true });
+    await navigator.serviceWorker.ready;
+    patchSnapshot({
+      isRegistered: true,
+      isControlled: Boolean(navigator.serviceWorker.controller),
+      offlineCacheStatus: await readOfflineCacheStatus(),
+    });
+    ensureServiceWorkerControl();
     await syncPushSubscriptionStatus(registration);
   } catch {
-    patchSnapshot({ isRegistered: false, isSubscribed: false });
+    patchSnapshot({
+      isRegistered: false,
+      isControlled: Boolean(navigator.serviceWorker.controller),
+      isSubscribed: false,
+      offlineCacheStatus: await readOfflineCacheStatus(),
+    });
   }
 
   return snapshot;

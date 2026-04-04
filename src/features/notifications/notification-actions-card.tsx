@@ -38,6 +38,10 @@ function getPushLabel(status: ReturnType<typeof usePwaStatus>) {
   return status.isSubscribed ? "Registered" : "Not subscribed";
 }
 
+function getOfflineCacheLabel(ready: boolean) {
+  return ready ? "Ready" : "Missing";
+}
+
 export function NotificationActionsCard({
   nextReminder,
 }: {
@@ -159,6 +163,9 @@ export function NotificationActionsCard({
                   : "Waiting for registration"
                 : "Disabled in this environment"}
             </p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Control: {status.isControlled ? "Active" : "Not controlling this tab"}
+            </p>
           </div>
           <div className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
             <div className="flex items-center gap-2 text-sm font-medium">
@@ -176,6 +183,27 @@ export function NotificationActionsCard({
             </div>
             <p className="mt-2 text-sm text-muted-foreground">
               {getPushLabel(status)}
+            </p>
+          </div>
+        </div>
+
+        <div className="grid gap-3 md:grid-cols-3">
+          <div className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
+            <p className="text-sm font-medium">Shell cache</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {getOfflineCacheLabel(status.offlineCacheStatus.shellReady)}
+            </p>
+          </div>
+          <div className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
+            <p className="text-sm font-medium">Home page cache</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {getOfflineCacheLabel(status.offlineCacheStatus.homeReady)}
+            </p>
+          </div>
+          <div className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
+            <p className="text-sm font-medium">Offline page cache</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {getOfflineCacheLabel(status.offlineCacheStatus.offlineReady)}
             </p>
           </div>
         </div>

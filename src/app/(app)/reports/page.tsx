@@ -2,6 +2,9 @@ import { DistributionChart, TrendChart } from "@/components/app/charts";
 import { MetricCard } from "@/components/app/metric-card";
 import { PageHeader } from "@/components/app/page-header";
 import { getCurrentUserProfile, getReportsSnapshot } from "@/data/finance-repository";
+import { createPageMetadata } from "@/lib/page-metadata";
+
+export const metadata = createPageMetadata("Reports", "Review your reports.");
 
 export default async function ReportsPage() {
   const [profile, reports] = await Promise.all([
@@ -13,9 +16,8 @@ export default async function ReportsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Reports"
-        title="Readable financial reporting"
-        description="Monthly trend lines, expense distribution, wallet performance, and savings indicators without clutter."
+        title="Reports"
+        description="Review trends, totals, and spending."
       />
       <section className="grid gap-4 md:grid-cols-3">
         <MetricCard title="Income" value={reports.summary.income} currency={currency} trend="up" />

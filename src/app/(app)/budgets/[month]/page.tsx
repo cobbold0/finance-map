@@ -4,6 +4,9 @@ import { PageHeader } from "@/components/app/page-header";
 import { Progress } from "@/components/ui/progress";
 import { formatCurrency, formatMonthLabel } from "@/domain/finance";
 import { getCurrentUserProfile, getBudgetOverview } from "@/data/finance-repository";
+import { createPageMetadata } from "@/lib/page-metadata";
+
+export const metadata = createPageMetadata("Budget", "View budget details.");
 
 export default async function BudgetMonthDetailPage({
   params,
@@ -25,9 +28,8 @@ export default async function BudgetMonthDetailPage({
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Budget detail"
-        title={formatMonthLabel(month)}
-        description="Review actual spending against category limits and spot budget pressure early."
+        title="Budget"
+        description={`Review the budget for ${formatMonthLabel(month)}.`}
       />
       <div className="grid gap-4">
         {snapshot.categories.map((category) => (

@@ -7,6 +7,9 @@ import { HeaderActionLink, PageHeader } from "@/components/app/page-header";
 import { Progress } from "@/components/ui/progress";
 import { calculateGoalProgress, formatCurrency, getGoalRemaining } from "@/domain/finance";
 import { getCurrentUserProfile, getGoals } from "@/data/finance-repository";
+import { createPageMetadata } from "@/lib/page-metadata";
+
+export const metadata = createPageMetadata("Goals", "Track your goals.");
 
 export default async function GoalsPage() {
   const [profile, goals] = await Promise.all([getCurrentUserProfile(), getGoals()]);
@@ -15,9 +18,8 @@ export default async function GoalsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Goals"
-        title="Plan money around what matters"
-        description="Track target amounts, milestones, project phases, and progress toward meaningful outcomes."
+        title="Goals"
+        description="Track progress toward your goals."
         action={
           <HeaderActionLink href="/goals/new" icon={Plus}>
             New goal

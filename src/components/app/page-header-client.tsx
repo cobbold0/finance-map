@@ -4,13 +4,11 @@ import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 export function PageHeaderClient({
-  eyebrow,
   title,
   description,
   action,
   className,
 }: {
-  eyebrow?: React.ReactNode;
   title: React.ReactNode;
   description?: React.ReactNode;
   action?: React.ReactNode;
@@ -54,12 +52,11 @@ export function PageHeaderClient({
     >
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0 space-y-1">
-          {eyebrow ? <div>{eyebrow}</div> : null}
           <h1 className="page-header-title text-xl font-semibold tracking-tight md:text-xl">
             {title}
           </h1>
           {description ? (
-            <p className="page-header-description max-w-2xl text-sm leading-6 text-muted-foreground">
+            <p className="page-header-description max-w-2xl text-sm leading-6 text-muted-foreground hidden md:block">
               {description}
             </p>
           ) : null}

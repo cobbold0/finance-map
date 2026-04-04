@@ -2,6 +2,9 @@ import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/app/page-header";
 import { getBudgetCategory } from "@/data/finance-repository";
 import { BudgetCategoryForm } from "@/features/settings/budget-category-form";
+import { createPageMetadata } from "@/lib/page-metadata";
+
+export const metadata = createPageMetadata("Edit Budget Category", "Update this budget category.");
 
 export default async function EditBudgetCategoryPage({
   params,
@@ -18,9 +21,8 @@ export default async function EditBudgetCategoryPage({
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Settings"
-        title="Edit budget category"
-        description="Update the category used in monthly budget planning."
+        title="Edit Budget Category"
+        description="Update budget category details."
       />
       <BudgetCategoryForm
         categoryId={categoryId}

@@ -6,6 +6,9 @@ import { EmptyState } from "@/components/app/empty-state";
 import { HeaderActionLink, PageHeader } from "@/components/app/page-header";
 import { formatCurrency } from "@/domain/finance";
 import { getWallets } from "@/data/finance-repository";
+import { createPageMetadata } from "@/lib/page-metadata";
+
+export const metadata = createPageMetadata("Wallets", "View your wallets.");
 
 export default async function WalletsPage() {
   const wallets = await getWallets();
@@ -13,9 +16,8 @@ export default async function WalletsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Wallets"
-        title="Manage every wallet intentionally"
-        description="Use separate wallets for checking, savings, business, cash, emergency funds, and project money."
+        title="Wallets"
+        description="View and manage your wallets."
         action={
           <HeaderActionLink href="/wallets/new" icon={Plus}>
             New wallet

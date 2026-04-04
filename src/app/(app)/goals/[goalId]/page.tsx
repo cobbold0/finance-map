@@ -9,6 +9,9 @@ import { Progress } from "@/components/ui/progress";
 import { HeaderActionLink, PageHeader } from "@/components/app/page-header";
 import { calculateGoalProgress, formatCurrency, getGoalRemaining } from "@/domain/finance";
 import { getCurrentUserProfile, getGoalDetail } from "@/data/finance-repository";
+import { createPageMetadata } from "@/lib/page-metadata";
+
+export const metadata = createPageMetadata("Goal", "View goal details.");
 
 export default async function GoalDetailPage({
   params,
@@ -32,11 +35,10 @@ export default async function GoalDetailPage({
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Goal detail"
-        title={snapshot.goal.name}
+        title="Goal"
         description={
           snapshot.goal.description ??
-          "Track progress, milestones, and roadmap structure."
+          "View progress and milestones."
         }
         action={
           <HeaderActionLink href={`/goals/${goalId}/edit`} icon={PencilLine}>

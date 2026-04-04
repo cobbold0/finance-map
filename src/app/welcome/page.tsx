@@ -14,9 +14,8 @@ import { redirectIfAuthenticated } from "@/data/auth";
 import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
-  title: "Finance Map | A calmer way to manage money",
-  description:
-    "Finance Map helps you spread money into real-life wallets, track spending clearly, and build a more intentional personal finance routine.",
+  title: "Welcome",
+  description: "Explore Finance Map.",
 };
 
 const principles = [

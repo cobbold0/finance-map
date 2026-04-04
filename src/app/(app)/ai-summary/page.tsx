@@ -2,14 +2,16 @@ import { Sparkles } from "lucide-react";
 import { PageHeader } from "@/components/app/page-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { AISummaryPanel } from "@/features/ai-summary/ai-summary-panel";
+import { createPageMetadata } from "@/lib/page-metadata";
+
+export const metadata = createPageMetadata("AI Summary", "Get a quick summary.");
 
 export default function AISummaryPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="AI"
         title="AI Summary"
-        description="Get a grounded read-only summary of your current financial picture, built from the data you already track in Finance Map."
+        description="Get a quick summary of your finances."
       />
 
       <Card>

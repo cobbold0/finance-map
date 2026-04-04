@@ -7,6 +7,9 @@ import {
   getWallets,
 } from "@/data/finance-repository";
 import { TransactionForm } from "@/features/transactions/transaction-form";
+import { createPageMetadata } from "@/lib/page-metadata";
+
+export const metadata = createPageMetadata("Edit Transaction", "Update this transaction.");
 
 export default async function EditTransactionPage({
   params,
@@ -28,7 +31,7 @@ export default async function EditTransactionPage({
 
   return (
     <div className="space-y-6">
-      <PageHeader eyebrow="Transactions" title="Edit transaction" description="Adjust amount, wallet, category, and notes without losing the audit trail." />
+      <PageHeader title="Edit Transaction" description="Update transaction details." />
       <TransactionForm
         wallets={wallets}
         budgetCategories={budgetCategories}

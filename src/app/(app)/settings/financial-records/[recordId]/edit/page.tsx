@@ -2,6 +2,9 @@ import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/app/page-header";
 import { getFinancialRecord } from "@/data/finance-repository";
 import { FinancialRecordForm } from "@/features/settings/financial-record-form";
+import { createPageMetadata } from "@/lib/page-metadata";
+
+export const metadata = createPageMetadata("Edit Financial Record", "Update this financial record.");
 
 export default async function EditFinancialRecordPage({
   params,
@@ -18,9 +21,8 @@ export default async function EditFinancialRecordPage({
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Settings"
-        title="Edit financial record"
-        description="Update pension, investment, insurance, and provider information."
+        title="Edit Financial Record"
+        description="Update financial record details."
       />
       <FinancialRecordForm
         recordId={recordId}

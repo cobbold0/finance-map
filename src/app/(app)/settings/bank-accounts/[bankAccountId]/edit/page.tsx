@@ -2,6 +2,9 @@ import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/app/page-header";
 import { getBankAccounts } from "@/data/finance-repository";
 import { BankAccountForm } from "@/features/settings/bank-account-form";
+import { createPageMetadata } from "@/lib/page-metadata";
+
+export const metadata = createPageMetadata("Edit Bank Account", "Update bank account details.");
 
 export default async function EditBankAccountPage({
   params,
@@ -18,7 +21,7 @@ export default async function EditBankAccountPage({
 
   return (
     <div className="space-y-6">
-      <PageHeader eyebrow="Bank details" title="Edit bank details" description="Update bank labels, account fields, and share-ready metadata." />
+      <PageHeader title="Edit Bank Account" description="Update bank account details." />
       <BankAccountForm
         bankAccountId={bankAccountId}
         defaultValues={{

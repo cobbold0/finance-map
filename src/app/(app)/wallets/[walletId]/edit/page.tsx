@@ -2,6 +2,9 @@ import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/app/page-header";
 import { getWalletDetail } from "@/data/finance-repository";
 import { WalletForm } from "@/features/wallets/wallet-form";
+import { createPageMetadata } from "@/lib/page-metadata";
+
+export const metadata = createPageMetadata("Edit Wallet", "Update this wallet.");
 
 export default async function EditWalletPage({
   params,
@@ -17,7 +20,7 @@ export default async function EditWalletPage({
 
   return (
     <div className="space-y-6">
-      <PageHeader eyebrow="Wallets" title="Edit wallet" description="Update labels, color, currency, and notes." />
+      <PageHeader title="Edit Wallet" description="Update wallet details." />
       <WalletForm
         walletId={walletId}
         defaultValues={{

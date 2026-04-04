@@ -5,6 +5,9 @@ import { EmptyState } from "@/components/app/empty-state";
 import { HeaderActionLink, PageHeader } from "@/components/app/page-header";
 import { getBankAccounts } from "@/data/finance-repository";
 import { BankAccountCard } from "@/features/settings/bank-account-card";
+import { createPageMetadata } from "@/lib/page-metadata";
+
+export const metadata = createPageMetadata("Bank Accounts", "View your bank accounts.");
 
 export default async function BankAccountsPage() {
   const bankAccounts = await getBankAccounts();
@@ -12,9 +15,8 @@ export default async function BankAccountsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Bank details"
-        title="Bank account details"
-        description="Store copyable bank details and share the full summary in one action."
+        title="Bank Accounts"
+        description="View and manage bank account details."
         action={
           <HeaderActionLink href="/settings/bank-accounts/new" icon={Plus}>
             Add details

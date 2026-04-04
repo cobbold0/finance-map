@@ -6,6 +6,7 @@ import {
   Landmark,
   Layers3,
   LogOut,
+  RadioTower,
   Shield,
   UserRound,
 } from "lucide-react";
@@ -13,6 +14,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/app/page-header";
 import { signOutAction } from "@/features/auth/actions";
+import { createPageMetadata } from "@/lib/page-metadata";
+
+export const metadata = createPageMetadata("Settings", "Manage your account settings.");
 
 const settingLinks = [
   {
@@ -51,15 +55,20 @@ const settingLinks = [
     href: "/settings/import-export",
     icon: Download,
   },
+  {
+    label: "PWA diagnostics",
+    description: "Inspect service worker, offline shell, and cache state on this device.",
+    href: "/pwa-debug",
+    icon: RadioTower,
+  },
 ] as const;
 
 export default function SettingsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Settings"
         title="Settings"
-        description="Manage your profile, currency, notifications, bank details, and exports."
+        description="Manage profile, notifications, and data."
       />
       <Card>
         <CardContent className="p-0">

@@ -1,18 +1,15 @@
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PageHeaderClient } from "@/components/app/page-header-client";
 import { cn } from "@/lib/utils";
 
 export function PageHeader({
-  eyebrow,
   title,
   description,
   action,
   className,
 }: {
-  eyebrow?: string;
   title: string;
   description?: string;
   action?: React.ReactNode;
@@ -20,7 +17,6 @@ export function PageHeader({
 }) {
   return (
     <PageHeaderClient
-      eyebrow={eyebrow ? <Badge>{eyebrow}</Badge> : undefined}
       title={title}
       description={description}
       action={action}

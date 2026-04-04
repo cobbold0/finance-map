@@ -1,13 +1,15 @@
 import { PageHeader } from "@/components/app/page-header";
 import { FinancialRecordForm } from "@/features/settings/financial-record-form";
+import { createPageMetadata } from "@/lib/page-metadata";
+
+export const metadata = createPageMetadata("Add Financial Record", "Create a financial record.");
 
 export default function NewFinancialRecordPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Settings"
-        title="Add financial record"
-        description="Add pensions, investments, insurance policies, and other important financial records."
+        title="Add Financial Record"
+        description="Create a new financial record."
       />
       <FinancialRecordForm />
     </div>

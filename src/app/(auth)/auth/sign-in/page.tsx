@@ -1,8 +1,14 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { redirectIfAuthenticated } from "@/data/auth";
 import { LogoMark } from "@/components/app/logo-mark";
 import { SignInForm } from "@/features/auth/sign-in-form";
 import { Card, CardContent } from "@/components/ui/card";
+
+export const metadata: Metadata = {
+  title: "Sign In",
+  description: "Access your account.",
+};
 
 export default async function SignInPage() {
   await redirectIfAuthenticated();

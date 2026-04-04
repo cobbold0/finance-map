@@ -4,7 +4,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { HeaderActionLink, PageHeader } from "@/components/app/page-header";
 import { formatCurrency, getTransactionDisplayLabel } from "@/domain/finance";
 import { getWalletDetail } from "@/data/finance-repository";
+import { createPageMetadata } from "@/lib/page-metadata";
 import { cn } from "@/lib/utils";
+
+export const metadata = createPageMetadata("Wallet", "View wallet details.");
 
 function formatTransactionDate(value: string) {
   return new Intl.DateTimeFormat("en-US", {
@@ -29,9 +32,8 @@ export default async function WalletDetailPage({
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Wallet detail"
-        title={snapshot.wallet.name}
-        description={snapshot.wallet.description ?? "Track balance, quick actions, and wallet history."}
+        title="Wallet"
+        description={snapshot.wallet.description ?? "View balance and recent activity."}
         action={
           <div className="flex gap-2">
             <HeaderActionLink

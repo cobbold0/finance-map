@@ -7,6 +7,9 @@ import {
 } from "@/data/finance-repository";
 import { NotificationActionsCard } from "@/features/notifications/notification-actions-card";
 import { NotificationPreferencesForm } from "@/features/settings/notification-preferences-form";
+import { createPageMetadata } from "@/lib/page-metadata";
+
+export const metadata = createPageMetadata("Notification Preferences", "Manage notification settings.");
 
 export default async function SettingsPreferencesPage() {
   const [preferences, reminders, settings] = await Promise.all([
@@ -18,9 +21,8 @@ export default async function SettingsPreferencesPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Settings"
-        title="Notification preferences"
-        description="Control browser delivery, reminder types, and the financial alerts you actually want to receive."
+        title="Notification Preferences"
+        description="Manage reminder and alert settings."
       />
       <NotificationActionsCard nextReminder={reminders[0]} />
       <Card>

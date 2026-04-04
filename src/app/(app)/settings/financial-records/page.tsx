@@ -5,6 +5,9 @@ import { EmptyState } from "@/components/app/empty-state";
 import { HeaderActionLink, PageHeader } from "@/components/app/page-header";
 import { getFinancialRecords } from "@/data/finance-repository";
 import { FinancialRecordCard } from "@/features/settings/financial-record-card";
+import { createPageMetadata } from "@/lib/page-metadata";
+
+export const metadata = createPageMetadata("Financial Records", "View your financial records.");
 
 export default async function FinancialRecordsPage() {
   const records = await getFinancialRecords();
@@ -12,9 +15,8 @@ export default async function FinancialRecordsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Settings"
-        title="Financial records"
-        description="Store pensions, investments, insurance, and other long-term financial records in one place."
+        title="Financial Records"
+        description="View pensions, investments, and policies."
         action={
           <HeaderActionLink href="/settings/financial-records/new" icon={Plus}>
             Add record

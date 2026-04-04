@@ -4,6 +4,9 @@ import { PageHeader } from "@/components/app/page-header";
 import { getBudgetCategories } from "@/data/finance-repository";
 import { BudgetForm } from "@/features/budgets/budget-form";
 import Link from "next/link";
+import { createPageMetadata } from "@/lib/page-metadata";
+
+export const metadata = createPageMetadata("Add Budget", "Create a budget.");
 
 export default async function NewBudgetPage() {
   const categories = await getBudgetCategories();
@@ -11,9 +14,8 @@ export default async function NewBudgetPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Budgets"
-        title="Create budget"
-        description="Set your monthly limit and category caps for the month ahead."
+        title="Add Budget"
+        description="Create a new budget."
       />
       {categories.length ? (
         <BudgetForm categories={categories} />

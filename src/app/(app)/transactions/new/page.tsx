@@ -8,6 +8,9 @@ import {
   getWallets,
 } from "@/data/finance-repository";
 import { TransactionForm } from "@/features/transactions/transaction-form";
+import { createPageMetadata } from "@/lib/page-metadata";
+
+export const metadata = createPageMetadata("Add Transaction", "Create a transaction.");
 
 export default async function NewTransactionPage() {
   const [wallets, budgetCategories, budgetOverview] = await Promise.all([
@@ -18,7 +21,7 @@ export default async function NewTransactionPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader eyebrow="Transactions" title="Add transaction" description="Capture income, expenses, transfers, notes, category, and timing." />
+      <PageHeader title="Add Transaction" description="Create a new transaction." />
       {wallets.length ? (
         <TransactionForm
           wallets={wallets}

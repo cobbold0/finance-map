@@ -8,6 +8,9 @@ import {
   getTransactionDisplayLabel,
 } from "@/domain/finance";
 import { getBudgetOverview, getTransactions } from "@/data/finance-repository";
+import { createPageMetadata } from "@/lib/page-metadata";
+
+export const metadata = createPageMetadata("Transaction", "View transaction details.");
 
 export default async function TransactionDetailPage({
   params,
@@ -34,9 +37,8 @@ export default async function TransactionDetailPage({
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Transactions"
-        title={transaction.category ?? getTransactionDisplayLabel(transaction)}
-        description="Reference, notes, amount, and reconciliation context."
+        title="Transaction"
+        description="View amount, notes, and status."
       />
       <Card>
         <CardContent className="space-y-3">

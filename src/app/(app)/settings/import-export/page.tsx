@@ -3,14 +3,16 @@ import { Download, Upload } from "lucide-react";
 import { PageHeader } from "@/components/app/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { createPageMetadata } from "@/lib/page-metadata";
+
+export const metadata = createPageMetadata("Import & Export", "Manage imports and exports.");
 
 export default function ImportExportPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Import / export"
-        title="Move your data safely"
-        description="Import transactions with CSV, and export a full JSON bundle for portability and backup."
+        title="Import & Export"
+        description="Import CSV files or export your data."
       />
       <div className="grid gap-4 lg:grid-cols-2">
         <Card>

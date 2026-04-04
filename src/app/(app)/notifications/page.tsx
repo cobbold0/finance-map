@@ -6,6 +6,9 @@ import {
   getReminders,
 } from "@/data/finance-repository";
 import { NotificationActionsCard } from "@/features/notifications/notification-actions-card";
+import { createPageMetadata } from "@/lib/page-metadata";
+
+export const metadata = createPageMetadata("Notifications", "Manage your reminders.");
 
 export default async function NotificationsPage() {
   const [preferences, reminders, deliveries] = await Promise.all([
@@ -17,9 +20,8 @@ export default async function NotificationsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Notifications"
-        title="Smart reminders and preferences"
-        description="Prepare for in-app and browser notification flows without changing the data model later."
+        title="Notifications"
+        description="Manage reminders and alerts."
       />
       <NotificationActionsCard nextReminder={reminders[0]} />
       <Card>

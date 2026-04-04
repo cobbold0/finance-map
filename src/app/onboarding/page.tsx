@@ -5,7 +5,8 @@ import { OnboardingForm } from "@/features/auth/onboarding-form";
 import { AuthShell } from "@/components/auth/auth-shell";
 
 export const metadata: Metadata = {
-  title: "Onboarding | Finance Map",
+  title: "Onboarding",
+  description: "Set up your account.",
 };
 
 export default async function OnboardingPage() {
@@ -17,9 +18,8 @@ export default async function OnboardingPage() {
 
   return (
     <AuthShell
-      eyebrow="Onboarding"
-      title="Set up your finance home with a little guidance."
-      description="We will start with the essentials: your identity, your first wallet, and the reminders that keep you consistent."
+      title="Onboarding"
+      description="Set up your profile and first wallet."
       mode="onboarding"
     >
       <OnboardingForm defaultName={profile.fullName} />

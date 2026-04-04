@@ -6,7 +6,10 @@ import { EmptyState } from "@/components/app/empty-state";
 import { HeaderActionLink, PageHeader } from "@/components/app/page-header";
 import { formatCurrency, getTransactionDisplayLabel } from "@/domain/finance";
 import { getTransactions, getWallets } from "@/data/finance-repository";
+import { createPageMetadata } from "@/lib/page-metadata";
 import { cn } from "@/lib/utils";
+
+export const metadata = createPageMetadata("Transactions", "Review your transactions.");
 
 function formatTransactionDate(value: string) {
   return new Intl.DateTimeFormat("en-US", {
@@ -34,9 +37,8 @@ export default async function TransactionsPage({
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Transactions"
-        title="Track every money movement"
-        description="Search, filter, reconcile, and export your income, expenses, and transfers."
+        title="Transactions"
+        description="Search and review your transactions."
         action={
           <HeaderActionLink href="/transactions/new" icon={Plus}>
             New transaction

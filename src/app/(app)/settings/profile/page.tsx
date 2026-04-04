@@ -2,6 +2,9 @@ import { PageHeader } from "@/components/app/page-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { getCurrentUserProfile, getUserSettings } from "@/data/finance-repository";
 import { ProfileSettingsForm } from "@/features/settings/profile-settings-form";
+import { createPageMetadata } from "@/lib/page-metadata";
+
+export const metadata = createPageMetadata("Profile", "Manage your profile.");
 
 export default async function ProfileSettingsPage() {
   const [profile, settings] = await Promise.all([
@@ -12,9 +15,8 @@ export default async function ProfileSettingsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Settings"
-        title="Profile and finance preferences"
-        description="Configure your identity, base currency, and salary cadence without mixing in reminder delivery controls."
+        title="Profile"
+        description="Manage your profile and defaults."
       />
       <Card>
         <CardContent className="space-y-4">

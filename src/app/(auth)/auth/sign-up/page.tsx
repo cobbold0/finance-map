@@ -5,7 +5,8 @@ import { SignUpForm } from "@/features/auth/sign-up-form";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Create Account | Finance Map",
+  title: "Sign Up",
+  description: "Create your account.",
 };
 
 export default async function SignUpPage() {
@@ -13,9 +14,8 @@ export default async function SignUpPage() {
 
   return (
     <AuthShell
-      eyebrow="Create account"
-      title="Build a calmer money system in just a couple of minutes."
-      description="Start with one wallet, set your base currency, and grow from there as your finances get clearer."
+      title="Sign up"
+      description="Create your account."
       mode="compact"
       footer={
         <p className="text-muted-foreground">

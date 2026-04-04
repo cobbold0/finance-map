@@ -5,6 +5,9 @@ import { EmptyState } from "@/components/app/empty-state";
 import { HeaderActionLink, PageHeader } from "@/components/app/page-header";
 import { getBudgetCategories } from "@/data/finance-repository";
 import { BudgetCategoryCard } from "@/features/settings/budget-category-card";
+import { createPageMetadata } from "@/lib/page-metadata";
+
+export const metadata = createPageMetadata("Budget Categories", "View your budget categories.");
 
 export default async function BudgetCategoriesPage() {
   const categories = await getBudgetCategories();
@@ -12,9 +15,8 @@ export default async function BudgetCategoriesPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Settings"
-        title="Budget categories"
-        description="Manage the categories used when creating monthly budgets."
+        title="Budget Categories"
+        description="View and manage budget categories."
         action={
           <HeaderActionLink href="/settings/budget-categories/new" icon={Plus}>
             Add category

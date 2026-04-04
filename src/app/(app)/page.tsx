@@ -29,7 +29,10 @@ import {
   getCurrentUserProfile,
   getDashboardSnapshot,
 } from "@/data/finance-repository";
+import { createPageMetadata } from "@/lib/page-metadata";
 import { cn } from "@/lib/utils";
+
+export const metadata = createPageMetadata("Dashboard", "See your latest overview.");
 
 type SetupTask = {
   id: string;
@@ -150,9 +153,8 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Dashboard"
-        title="Your money at a glance"
-        description="See what is healthy, what needs attention, and what to do next without hunting around the app."
+        title="Dashboard"
+        description="See your balances, activity, and next steps."
         action={
           <div className="flex flex-wrap gap-2">
             <HeaderActionLink href="/ai-summary" icon={Sparkles} variant="outline">

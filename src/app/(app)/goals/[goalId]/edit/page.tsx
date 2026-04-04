@@ -2,6 +2,9 @@ import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/app/page-header";
 import { getGoalDetail, getWallets } from "@/data/finance-repository";
 import { GoalForm } from "@/features/goals/goal-form";
+import { createPageMetadata } from "@/lib/page-metadata";
+
+export const metadata = createPageMetadata("Edit Goal", "Update this goal.");
 
 export default async function EditGoalPage({
   params,
@@ -17,7 +20,7 @@ export default async function EditGoalPage({
 
   return (
     <div className="space-y-6">
-      <PageHeader eyebrow="Goals" title="Edit goal" description="Adjust target amount, timeline, and linked wallet." />
+      <PageHeader title="Edit Goal" description="Update goal details." />
       <GoalForm
         wallets={wallets}
         goalId={goalId}

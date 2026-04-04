@@ -7,6 +7,9 @@ import { HeaderActionLink, PageHeader } from "@/components/app/page-header";
 import { Progress } from "@/components/ui/progress";
 import { formatMonthLabel, formatCurrency } from "@/domain/finance";
 import { getCurrentUserProfile, getBudgetOverview } from "@/data/finance-repository";
+import { createPageMetadata } from "@/lib/page-metadata";
+
+export const metadata = createPageMetadata("Budgets", "Review your budgets.");
 
 export default async function BudgetsPage() {
   const [profile, snapshot] = await Promise.all([
@@ -18,9 +21,8 @@ export default async function BudgetsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Budgets"
-        title="Budget with clarity"
-        description="See monthly limits, category pressure, and warning states before spending slips."
+        title="Budgets"
+        description="Review limits, spending, and warnings."
         action={
           <HeaderActionLink href="/budgets/new" icon={Plus}>
             Create budget

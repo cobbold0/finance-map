@@ -28,14 +28,12 @@ const benefits = [
 ] as const;
 
 export function AuthShell({
-  eyebrow,
   title,
   description,
   children,
   footer,
   mode = "full",
 }: {
-  eyebrow: string;
   title: string;
   description: string;
   children: React.ReactNode;
@@ -71,9 +69,6 @@ export function AuthShell({
                   </div>
                 </div>
                 <div className="space-y-3">
-                  <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary/80">
-                    {eyebrow}
-                  </p>
                   <h1 className="max-w-xl text-3xl font-semibold tracking-tight md:text-4xl">
                     {title}
                   </h1>
@@ -109,9 +104,6 @@ export function AuthShell({
                   </div>
                 </div>
                 <div className="space-y-4">
-                  <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary/80">
-                    {eyebrow}
-                  </p>
                   <h1 className="max-w-3xl text-4xl font-semibold tracking-tight md:text-6xl">
                     {title}
                   </h1>
@@ -175,14 +167,9 @@ export function AuthShell({
                   {isCompact ? (
                     <div className="flex items-center gap-3">
                       <LogoMark />
-                      <div>
-                        <p className="font-semibold">Finance Map</p>
-                        <p className="text-sm text-muted-foreground">{eyebrow}</p>
-                      </div>
+                      <p className="font-semibold">Finance Map</p>
                     </div>
-                  ) : (
-                    <p className="text-sm font-semibold">{eyebrow}</p>
-                  )}
+                  ) : null}
                   <div className="space-y-1">
                     <h1 className={cn("text-2xl font-semibold tracking-tight", isOnboarding && "text-3xl")}>
                       {title}

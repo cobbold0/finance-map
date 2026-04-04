@@ -1,13 +1,15 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { PageHeader } from "@/components/app/page-header";
+import { createPageMetadata } from "@/lib/page-metadata";
+
+export const metadata = createPageMetadata("Import Transactions", "Import transactions from CSV.");
 
 export default function TransactionsImportPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Import"
-        title="Import transactions from CSV"
-        description="Import historical transactions from CSV into your wallet-first ledger."
+        title="Import Transactions"
+        description="Import transactions from CSV."
       />
       <Card>
         <CardContent className="space-y-3">
