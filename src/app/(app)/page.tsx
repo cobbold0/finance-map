@@ -161,11 +161,11 @@ export default async function DashboardPage() {
 
       {setupComplete ? (
         <section>
-          <Card className="overflow-hidden border-primary/20 bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.14),transparent_42%),linear-gradient(135deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))]">
+          <Card className="overflow-hidden border-primary/20 bg-card">
             <CardContent className="space-y-6">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                 <div className="space-y-2">
-                  <Badge className="w-fit border-primary/20 bg-primary/10 text-white">
+                  <Badge className="w-fit border-primary/20 bg-primary/10 text-primary-foreground">
                     Month overview
                   </Badge>
                   <h2 className="max-w-2xl text-3xl font-semibold tracking-tight">
@@ -189,7 +189,7 @@ export default async function DashboardPage() {
               </div>
 
               <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-                <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+                <div className="rounded-2xl border border-border bg-secondary p-4">
                   <p className="text-sm text-muted-foreground">Month net</p>
                   <p className="mt-2 text-2xl font-semibold">
                     {formatCompactCurrency(netCashflow, currency)}
@@ -197,7 +197,7 @@ export default async function DashboardPage() {
                 </div>
                 <Link
                   href="/budgets"
-                  className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 transition hover:bg-white/[0.07]"
+                  className="rounded-2xl border border-border bg-secondary p-4 transition hover:bg-[#252a31]"
                 >
                   <div className="flex items-center justify-between gap-3">
                     <p className="text-sm text-muted-foreground">Budget posture</p>
@@ -211,7 +211,7 @@ export default async function DashboardPage() {
                 </Link>
                 <Link
                   href={leadGoal ? `/goals/${leadGoal.id}` : "/goals"}
-                  className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 transition hover:bg-white/[0.07]"
+                  className="rounded-2xl border border-border bg-secondary p-4 transition hover:bg-[#252a31]"
                 >
                   <p className="text-sm text-muted-foreground">Lead goal</p>
                   <p className="mt-2 text-2xl font-semibold">
@@ -225,7 +225,7 @@ export default async function DashboardPage() {
                 </Link>
                 <Link
                   href={hasAlerts ? "/notifications" : "/transactions"}
-                  className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 transition hover:bg-white/[0.07]"
+                  className="rounded-2xl border border-border bg-secondary p-4 transition hover:bg-[#252a31]"
                 >
                   <p className="text-sm text-muted-foreground">Attention queue</p>
                   <p className="mt-2 text-2xl font-semibold">
@@ -243,7 +243,7 @@ export default async function DashboardPage() {
         </section>
       ) : (
         <section className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
-          <Card className="overflow-hidden border-primary/20 bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.18),transparent_48%),linear-gradient(135deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))]">
+          <Card className="overflow-hidden border-primary/20 bg-card">
             <CardContent className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
               <div className="space-y-5">
                 <Badge className="w-fit border-primary/20 bg-primary/10 text-primary-foreground">
@@ -263,7 +263,7 @@ export default async function DashboardPage() {
                     <span className="text-muted-foreground">Setup progress</span>
                     <span className="font-medium">{Math.round(setupProgress)}%</span>
                   </div>
-                  <Progress value={setupProgress} className="h-2.5 bg-white/12" />
+                  <Progress value={setupProgress} className="h-2.5 bg-secondary" />
                 </div>
                 <div className="flex flex-wrap gap-3">
                   <Button asChild size="lg" className="rounded-xl">
@@ -287,41 +287,52 @@ export default async function DashboardPage() {
                       key={task.id}
                       href={task.href}
                       className={cn(
-                        "rounded-2xl border px-4 py-4 transition",
+                        "rounded-xl border border-transparent px-4 py-4 transition",
                         task.done
-                          ? "border-emerald-400/15 bg-emerald-400/[0.08] hover:bg-emerald-400/[0.11]"
-                          : "border-white/10 bg-white/[0.04] hover:bg-white/[0.07]",
+                          ? "bg-[#1b2420] hover:bg-[#202b26]"
+                          : "bg-secondary hover:bg-[#252a31]",
                       )}
                     >
-                      <div className="flex items-start gap-3">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex min-w-0 items-start gap-3">
+                          <div
+                            className={cn(
+                              "mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl",
+                              task.done
+                                ? "bg-emerald-900/50 text-emerald-200"
+                                : "bg-background text-foreground",
+                            )}
+                          >
+                            {task.done ? (
+                              <CheckCircle2 className="h-5 w-5" />
+                            ) : (
+                              <Icon className="h-5 w-5" />
+                            )}
+                          </div>
+                          <div className="min-w-0 space-y-1">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <p className="font-medium">{task.title}</p>
+                              <Badge
+                                className={cn(
+                                  task.done
+                                    ? "border-emerald-400/20 bg-emerald-400/10 text-emerald-200"
+                                    : "border-border bg-background text-muted-foreground",
+                                )}
+                              >
+                                {task.done ? "Done" : "Next"}
+                              </Badge>
+                            </div>
+                            <p className="text-sm leading-6 text-muted-foreground">
+                              {task.description}
+                            </p>
+                          </div>
+                        </div>
                         <div
                           className={cn(
-                            "mt-0.5 flex h-10 w-10 items-center justify-center rounded-2xl",
-                            task.done ? "bg-emerald-400/15 text-emerald-200" : "bg-white/8 text-foreground",
+                            "mt-1 hidden text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground md:block",
                           )}
                         >
-                          {task.done ? (
-                            <CheckCircle2 className="h-5 w-5" />
-                          ) : (
-                            <Icon className="h-5 w-5" />
-                          )}
-                        </div>
-                        <div className="min-w-0 space-y-1">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <p className="font-medium">{task.title}</p>
-                            <Badge
-                              className={cn(
-                                task.done
-                                  ? "border-emerald-400/20 bg-emerald-400/10 text-emerald-200"
-                                  : "border-white/10 bg-white/[0.06] text-muted-foreground",
-                              )}
-                            >
-                              {task.done ? "Done" : "Next"}
-                            </Badge>
-                          </div>
-                          <p className="text-sm leading-6 text-muted-foreground">
-                            {task.description}
-                          </p>
+                          {task.done ? "Ready" : "Action"}
                         </div>
                       </div>
                     </Link>
@@ -344,7 +355,7 @@ export default async function DashboardPage() {
               </div>
 
               <div className="space-y-4">
-                <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <div className="rounded-2xl border border-border bg-secondary p-4">
                   <p className="text-sm text-muted-foreground">Budget posture</p>
                   {snapshot.budgetHealth && budgetState ? (
                     <div className="mt-3 space-y-3">
@@ -357,7 +368,7 @@ export default async function DashboardPage() {
                       <Progress
                         value={budgetRatio}
                         className={cn(
-                          "h-2.5 bg-white/10 [&>div]:bg-primary",
+                          "h-2.5 bg-background [&>div]:bg-primary",
                           budgetState.barTone === "bg-emerald-400" && "[&>div]:bg-emerald-400",
                           budgetState.barTone === "bg-amber-400" && "[&>div]:bg-amber-400",
                           budgetState.barTone === "bg-rose-400" && "[&>div]:bg-rose-400",
@@ -377,7 +388,7 @@ export default async function DashboardPage() {
                   )}
                 </div>
 
-                <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <div className="rounded-2xl border border-border bg-secondary p-4">
                   <p className="text-sm text-muted-foreground">Activity signal</p>
                   <p className="mt-3 text-2xl font-semibold">
                     {hasTransactions
@@ -450,19 +461,19 @@ export default async function DashboardPage() {
               </Button>
             </div>
             {snapshot.quickWallets.length ? (
-              <div className="grid gap-3 md:grid-cols-3">
+              <div className="overflow-hidden rounded-2xl border border-border bg-secondary">
                 {snapshot.quickWallets.map((wallet) => (
                   <Link
                     key={wallet.id}
                     href={`/wallets/${wallet.id}`}
-                    className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 transition hover:bg-white/[0.06]"
+                    className="flex items-center justify-between gap-4 border-b border-border px-4 py-4 transition last:border-b-0 hover:bg-[#252a31]"
                   >
-                    <p className="text-sm text-muted-foreground">{wallet.name}</p>
-                    <p className="mt-2 text-xl font-semibold">
+                    <div className="min-w-0">
+                      <p className="font-medium">{wallet.name}</p>
+                      <p className="mt-1 text-sm text-muted-foreground">Open wallet</p>
+                    </div>
+                    <p className="text-right text-lg font-semibold">
                       {formatCurrency(wallet.balance, wallet.nativeCurrency)}
-                    </p>
-                    <p className="mt-3 text-xs uppercase tracking-[0.2em] text-muted-foreground">
-                      Open wallet
                     </p>
                   </Link>
                 ))}
@@ -496,39 +507,49 @@ export default async function DashboardPage() {
             </div>
             {hasGoals || hasAlerts ? (
               <div className="space-y-3">
-                {snapshot.activeGoals.map((goal) => (
-                  <Link
-                    key={goal.id}
-                    href={`/goals/${goal.id}`}
-                    className="block rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 transition hover:bg-white/[0.06]"
-                  >
-                    <div className="flex items-center justify-between gap-4">
-                      <p className="font-medium">{goal.name}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {Math.round(calculateGoalProgress(goal))}%
-                      </p>
-                    </div>
-                    <Progress value={calculateGoalProgress(goal)} className="mt-3" />
-                    <p className="mt-3 text-sm text-muted-foreground">
-                      {formatCurrency(goal.savedAmount, currency)} saved of{" "}
-                      {formatCurrency(goal.targetAmount, currency)}
-                    </p>
-                  </Link>
-                ))}
-                {snapshot.alerts.map((alert) => (
-                  <div
-                    key={alert.id}
-                    className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4"
-                  >
-                    <div className="flex items-center gap-2">
-                      <BellRing className="h-4 w-4 text-primary" />
-                      <p className="font-medium">{alert.title}</p>
-                    </div>
-                    <p className="mt-2 text-sm text-muted-foreground">
-                      {alert.description ?? "Reminder ready"}
-                    </p>
+                {snapshot.activeGoals.length ? (
+                  <div className="overflow-hidden rounded-2xl border border-border bg-secondary">
+                    {snapshot.activeGoals.map((goal) => (
+                      <Link
+                        key={goal.id}
+                        href={`/goals/${goal.id}`}
+                        className="block border-b border-border px-4 py-4 transition last:border-b-0 hover:bg-[#252a31]"
+                      >
+                        <div className="flex items-center justify-between gap-4">
+                          <div className="min-w-0">
+                            <p className="font-medium">{goal.name}</p>
+                            <p className="mt-1 text-sm text-muted-foreground">
+                              {formatCurrency(goal.savedAmount, currency)} saved of{" "}
+                              {formatCurrency(goal.targetAmount, currency)}
+                            </p>
+                          </div>
+                          <p className="text-sm font-medium text-muted-foreground">
+                            {Math.round(calculateGoalProgress(goal))}%
+                          </p>
+                        </div>
+                        <Progress value={calculateGoalProgress(goal)} className="mt-3" />
+                      </Link>
+                    ))}
                   </div>
-                ))}
+                ) : null}
+                {snapshot.alerts.length ? (
+                  <div className="overflow-hidden rounded-2xl border border-border bg-secondary">
+                    {snapshot.alerts.map((alert) => (
+                      <div
+                        key={alert.id}
+                        className="border-b border-border px-4 py-4 last:border-b-0"
+                      >
+                        <div className="flex items-center gap-2">
+                          <BellRing className="h-4 w-4 text-primary" />
+                          <p className="font-medium">{alert.title}</p>
+                        </div>
+                        <p className="mt-2 text-sm text-muted-foreground">
+                          {alert.description ?? "Reminder ready"}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
               </div>
             ) : (
               <EmptyState
@@ -560,12 +581,12 @@ export default async function DashboardPage() {
               </Button>
             </div>
             {hasTransactions ? (
-              <div className="space-y-3">
+              <div className="overflow-hidden rounded-2xl border border-border bg-secondary">
                 {snapshot.recentTransactions.map((transaction) => (
                   <Link
                     key={transaction.id}
                     href={`/transactions/${transaction.id}`}
-                    className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 transition hover:bg-white/[0.06]"
+                    className="flex items-center justify-between gap-4 border-b border-border px-4 py-3 transition last:border-b-0 hover:bg-[#252a31]"
                   >
                     <div className="min-w-0">
                       <p className="font-medium">

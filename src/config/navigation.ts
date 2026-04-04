@@ -18,9 +18,14 @@ export const mobileTabs = [
 ] as const;
 
 export const desktopNav = [
-  ...mobileTabs,
+  { title: "Home", href: "/", icon: Home },
+  { title: "Wallets", href: "/wallets", icon: Wallet },
+  { title: "Transactions", href: "/transactions", icon: CreditCard },
+  { title: "Goals", href: "/goals", icon: Goal },
+  { title: "Reports", href: "/reports", icon: PieChart },
   { title: "Budgets", href: "/budgets", icon: PieChart },
   { title: "Notifications", href: "/notifications", icon: Bell },
+  { title: "Settings", href: "/settings", icon: Settings },
 ] as const;
 
 export const quickActions = [
