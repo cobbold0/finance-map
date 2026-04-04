@@ -23,3 +23,12 @@ test("sign-in page stays reachable for signed-out visitors", async ({ page }) =>
     page.getByRole("link", { name: /create an account/i }),
   ).toBeVisible();
 });
+
+test("ai summary route redirects signed-out visitors to welcome", async ({ page }) => {
+  await page.goto("/ai-summary");
+
+  await expect(page).toHaveURL(/\/welcome$/);
+  await expect(
+    page.getByRole("link", { name: /get started/i }),
+  ).toBeVisible();
+});

@@ -7,6 +7,7 @@ import {
   Landmark,
   PiggyBank,
   Receipt,
+  Sparkles,
   Target,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -153,9 +154,14 @@ export default async function DashboardPage() {
         title="Your money at a glance"
         description="See what is healthy, what needs attention, and what to do next without hunting around the app."
         action={
-          <HeaderActionLink href="/settings/bank-accounts" icon={Landmark}>
-            Bank details
-          </HeaderActionLink>
+          <div className="flex flex-wrap gap-2">
+            <HeaderActionLink href="/ai-summary" icon={Sparkles} variant="outline">
+              AI Summary
+            </HeaderActionLink>
+            <HeaderActionLink href="/settings/bank-accounts" icon={Landmark}>
+              Bank details
+            </HeaderActionLink>
+          </div>
         }
       />
 
