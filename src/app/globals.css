@@ -24,6 +24,8 @@
   --input: #2c3138;
   --ring: #3d8b6d;
   --radius: 0.75rem;
+  --app-font-sans: "Avenir Next", "Segoe UI", "Helvetica Neue", sans-serif;
+  --app-font-mono: "SFMono-Regular", "SF Mono", "Cascadia Code", "Menlo", monospace;
 }
 
 @theme inline {
@@ -50,8 +52,8 @@
   --radius-md: calc(var(--radius) - 0.125rem);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 0.25rem);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--app-font-sans);
+  --font-mono: var(--app-font-mono);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -89,7 +91,7 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
   letter-spacing: -0.01em;
 }
 

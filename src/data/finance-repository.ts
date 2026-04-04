@@ -81,27 +81,36 @@ export async function getCurrentUserProfile(): Promise<UserProfile | null> {
     fullName: profile?.full_name ?? null,
     avatarUrl: profile?.avatar_url ?? null,
     baseCurrency: (profile?.currency ?? "GHS") as UserProfile["baseCurrency"],
-    themePreference: "dark",
-    onboardingCompleted: Boolean(profile?.full_name),
+    themePreference:
+      (profile?.theme_preference as UserProfile["themePreference"] | undefined) ??
+      "dark",
+    onboardingCompleted: profile?.onboarding_completed ?? false,
   };
 }
 
-export async function getUserSettings(): Promise<{ salaryDate: number | null }> {
+export async function getUserSettings(): Promise<{
+  salaryDate: number | null;
+  budgetWarningThreshold: number | null;
+}> {
   const ctx = await getAuthedSupabase();
 
   if (!ctx) {
-    return { salaryDate: null };
+    return { salaryDate: null, budgetWarningThreshold: null };
   }
 
   const { data } = await ctx.supabase
     .from("settings")
-    .select("salary_date")
+    .select("salary_date, budget_warning_threshold")
     .eq("user_id", ctx.user.id)
     .maybeSingle();
 
   return {
     salaryDate:
       typeof data?.salary_date === "number" ? data.salary_date : null,
+    budgetWarningThreshold:
+      typeof data?.budget_warning_threshold === "number"
+        ? data.budget_warning_threshold
+        : null,
   };
 }
 
@@ -333,13 +342,28 @@ export async function getBudgetOverview(month = new Date().toISOString().slice(0
     return { currentBudget: null, categories: [] };
   }
 
+  const { data: settingsRow } = await ctx.supabase
+    .from("settings")
+    .select("budget_warning_threshold")
+    .eq("user_id", ctx.user.id)
+    .maybeSingle();
+  const warningThreshold = Math.max(
+    0.5,
+    Math.min(
+      0.95,
+      (typeof settingsRow?.budget_warning_threshold === "number"
+        ? settingsRow.budget_warning_threshold
+        : 80) / 100,
+    ),
+  );
+
   const budget: Budget = {
     id: budgetRow.id,
     userId: budgetRow.user_id,
     month: budgetRow.month,
     totalLimit: budgetRow.total_limit ? parseAmount(budgetRow.total_limit) : null,
     rolloverPolicy: "reset",
-    warningThreshold: 0.8,
+    warningThreshold,
     status: "active",
   };
 
@@ -390,6 +414,7 @@ export async function getBudgetOverview(month = new Date().toISOString().slice(0
         expenseByCategory.get(item.category_id) ??
         expenseByCategory.get(normalizedCategoryName) ??
         0,
+      warningThreshold,
     });
   });
 
@@ -618,7 +643,11 @@ export async function getDashboardSnapshot(): Promise<DashboardSnapshot> {
           month: budgetOverview.currentBudget.month,
           spent,
           limit,
-          state: calculateBudgetState(spent, limit || 1),
+          state: calculateBudgetState(
+            spent,
+            limit || 1,
+            budgetOverview.currentBudget.warningThreshold,
+          ),
         }
       : null,
   };

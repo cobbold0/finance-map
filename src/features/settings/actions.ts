@@ -31,18 +31,27 @@ export async function saveProfileSettingsAction(values: unknown) {
     return { error: "Please sign in again." };
   }
 
-  await supabase.from("profiles").upsert({
+  const profileWrite = await supabase.from("profiles").upsert({
     id: user.id,
     email: user.email,
     full_name: payload.data.fullName,
     currency: payload.data.baseCurrency,
     theme_preference: "dark",
+    onboarding_completed: true,
   });
 
-  await supabase.from("settings").upsert({
+  if (profileWrite.error) {
+    return { error: profileWrite.error.message };
+  }
+
+  const settingsWrite = await supabase.from("settings").upsert({
     user_id: user.id,
     salary_date: payload.data.salaryDate,
   });
+
+  if (settingsWrite.error) {
+    return { error: settingsWrite.error.message };
+  }
 
   revalidatePath("/settings");
   revalidatePath("/settings/profile");
@@ -74,7 +83,7 @@ export async function saveNotificationPreferencesAction(values: unknown) {
     return { error: "Please sign in again." };
   }
 
-  await supabase.from("notification_preferences").upsert({
+  const notificationWrite = await supabase.from("notification_preferences").upsert({
     user_id: user.id,
     salary_reminder: payload.data.salaryReminder,
     bonus_reminder: payload.data.bonusReminder,
@@ -85,6 +94,19 @@ export async function saveNotificationPreferencesAction(values: unknown) {
     push_enabled: payload.data.browserEnabled,
     email_enabled: false,
   });
+
+  if (notificationWrite.error) {
+    return { error: notificationWrite.error.message };
+  }
+
+  const settingsWrite = await supabase.from("settings").upsert({
+    user_id: user.id,
+    budget_warning_threshold: payload.data.budgetWarningThreshold,
+  });
+
+  if (settingsWrite.error) {
+    return { error: settingsWrite.error.message };
+  }
 
   revalidatePath("/settings");
   revalidatePath("/settings/preferences");

@@ -1,13 +1,18 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { PageHeader } from "@/components/app/page-header";
-import { getNotificationPreferences, getReminders } from "@/data/finance-repository";
+import {
+  getNotificationPreferences,
+  getReminders,
+  getUserSettings,
+} from "@/data/finance-repository";
 import { NotificationActionsCard } from "@/features/notifications/notification-actions-card";
 import { NotificationPreferencesForm } from "@/features/settings/notification-preferences-form";
 
 export default async function SettingsPreferencesPage() {
-  const [preferences, reminders] = await Promise.all([
+  const [preferences, reminders, settings] = await Promise.all([
     getNotificationPreferences(),
     getReminders(),
+    getUserSettings(),
   ]);
 
   return (
@@ -30,6 +35,7 @@ export default async function SettingsPreferencesPage() {
           <NotificationPreferencesForm
             defaultValues={{
               browserEnabled: preferences?.browserEnabled ?? false,
+              budgetWarningThreshold: settings.budgetWarningThreshold ?? 80,
               salaryReminder: preferences?.salaryReminder ?? true,
               bonusReminder: preferences?.bonusReminder ?? true,
               milestoneReminder: preferences?.milestoneReminder ?? true,

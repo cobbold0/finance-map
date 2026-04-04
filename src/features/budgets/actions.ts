@@ -36,15 +36,17 @@ export async function saveBudgetAction(values: unknown) {
       ? payload.data.totalLimit
       : computedTotal;
 
-  const { data: budgetRecord, error: budgetError } = await supabase
-    .from("budgets")
-    .insert({
-      user_id: user.id,
-      month: payload.data.month,
-      total_limit: totalLimit || null,
-    })
-    .select("id, month")
-    .single();
+  const { data: budgetRecord, error: budgetError } = await supabase.rpc(
+    "create_budget_with_items",
+    {
+      month_input: payload.data.month,
+      total_limit_input: totalLimit || null,
+      items_input: selectedItems.map((item) => ({
+        category_id: item.categoryId,
+        limit_amount: item.limitAmount,
+      })),
+    },
+  );
 
   if (budgetError) {
     if (budgetError.code === "23505") {
@@ -54,25 +56,11 @@ export async function saveBudgetAction(values: unknown) {
     return { error: budgetError.message };
   }
 
-  if (selectedItems.length) {
-    const { error: itemsError } = await supabase.from("budget_items").insert(
-      selectedItems.map((item) => ({
-        budget_id: budgetRecord.id,
-        category_id: item.categoryId,
-        limit_amount: item.limitAmount,
-      })),
-    );
-
-    if (itemsError) {
-      return { error: itemsError.message };
-    }
-  }
-
   revalidatePath("/budgets");
-  revalidatePath(`/budgets/${budgetRecord.month}`);
+  revalidatePath(`/budgets/${budgetRecord?.[0]?.budget_month ?? payload.data.month}`);
   revalidatePath("/");
 
-  return { success: true, month: budgetRecord.month };
+  return { success: true, month: budgetRecord?.[0]?.budget_month ?? payload.data.month };
 }
 
 export async function createStarterBudgetCategoriesAction() {

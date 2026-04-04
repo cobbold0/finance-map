@@ -83,6 +83,7 @@ export function enrichBudgetCategory(category: {
   categoryName: string;
   limitAmount: number;
   spentAmount: number;
+  warningThreshold?: number;
 }): BudgetCategory {
   return {
     ...category,
@@ -90,6 +91,7 @@ export function enrichBudgetCategory(category: {
     warningState: calculateBudgetState(
       category.spentAmount,
       category.limitAmount,
+      category.warningThreshold,
     ),
   };
 }

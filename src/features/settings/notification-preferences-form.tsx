@@ -14,6 +14,8 @@ import {
   requestBrowserNotificationPermission,
 } from "@/lib/pwa";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 type NotificationPreferenceValues = z.infer<
   typeof notificationPreferencesSchema
@@ -118,6 +120,20 @@ export function NotificationPreferencesForm({
         }),
       )}
     >
+      <div className="space-y-2">
+        <Label htmlFor="budget-warning-threshold">Budget warning threshold (%)</Label>
+        <Input
+          id="budget-warning-threshold"
+          type="number"
+          inputMode="numeric"
+          min={50}
+          max={95}
+          {...form.register("budgetWarningThreshold", { valueAsNumber: true })}
+        />
+        <p className="text-sm text-muted-foreground">
+          Choose how early budget alerts should begin before a category limit is reached.
+        </p>
+      </div>
       <div className="grid gap-3">
         {preferenceOptions.map((option) => (
           <label

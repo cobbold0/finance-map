@@ -14,6 +14,26 @@ export type AuthFormState = {
   fieldErrors?: Partial<Record<"fullName" | "email" | "password", string>>;
 };
 
+async function upsertProfileWithOnboardingState(
+  supabase: NonNullable<Awaited<ReturnType<typeof createClient>>>,
+  values: {
+    id: string;
+    email: string | null | undefined;
+    fullName: string;
+    currency: string;
+    onboardingCompleted: boolean;
+  },
+) {
+  return await supabase.from("profiles").upsert({
+    id: values.id,
+    email: values.email ?? "",
+    full_name: values.fullName,
+    currency: values.currency,
+    theme_preference: "dark" as const,
+    onboarding_completed: values.onboardingCompleted,
+  });
+}
+
 export async function signInAction(values: unknown) {
   const payload = signInSchema.safeParse(values);
 
@@ -99,12 +119,12 @@ export async function signUpAction(values: unknown) {
   }
 
   if (data.user) {
-    await supabase.from("profiles").upsert({
+    await upsertProfileWithOnboardingState(supabase, {
       id: data.user.id,
       email: payload.data.email,
-      full_name: payload.data.fullName,
+      fullName: payload.data.fullName,
       currency: "GHS",
-      theme_preference: "dark",
+      onboardingCompleted: false,
     });
   }
 
@@ -151,12 +171,12 @@ export async function signUpFormAction(
   }
 
   if (data.user) {
-    await supabase.from("profiles").upsert({
+    await upsertProfileWithOnboardingState(supabase, {
       id: data.user.id,
       email: payload.data.email,
-      full_name: payload.data.fullName,
+      fullName: payload.data.fullName,
       currency: "GHS",
-      theme_preference: "dark",
+      onboardingCompleted: false,
     });
   }
 
@@ -196,38 +216,18 @@ export async function completeOnboardingAction(values: unknown) {
     return { error: "Please sign in again." };
   }
 
-  await supabase.from("profiles").upsert({
-    id: user.id,
-    email: user.email,
-    full_name: payload.data.fullName,
-    currency: payload.data.baseCurrency,
-    theme_preference: "dark",
+  const { error } = await supabase.rpc("complete_onboarding", {
+    full_name_input: payload.data.fullName,
+    base_currency_input: payload.data.baseCurrency,
+    default_wallet_name_input: payload.data.defaultWalletName,
+    salary_date_input: payload.data.salaryDate,
+    budget_warning_threshold_input: payload.data.budgetWarningThreshold,
+    browser_enabled_input: payload.data.browserEnabled,
   });
 
-  await supabase.from("settings").upsert({
-    user_id: user.id,
-    salary_date: payload.data.salaryDate,
-  });
-
-  await supabase.from("notification_preferences").upsert({
-    user_id: user.id,
-    salary_reminder: true,
-    bonus_reminder: true,
-    milestone_reminder: true,
-    monthly_review_reminder: true,
-    budget_warning: true,
-    reconciliation_reminder: true,
-    push_enabled: payload.data.browserEnabled,
-    email_enabled: false,
-  });
-
-  await supabase.from("wallets").insert({
-    user_id: user.id,
-    name: payload.data.defaultWalletName,
-    currency: payload.data.baseCurrency,
-    icon: "wallet",
-    color: "#3B82F6",
-  });
+  if (error) {
+    return { error: error.message };
+  }
 
   revalidatePath("/", "layout");
   return { success: true };

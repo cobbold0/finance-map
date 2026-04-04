@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { requireUserProfile } from "@/data/auth";
+import { redirect } from "next/navigation";
+import { requireAuthenticatedUserProfile } from "@/data/auth";
 import { OnboardingForm } from "@/features/auth/onboarding-form";
 import { AuthShell } from "@/components/auth/auth-shell";
 
@@ -8,7 +9,11 @@ export const metadata: Metadata = {
 };
 
 export default async function OnboardingPage() {
-  const profile = await requireUserProfile();
+  const profile = await requireAuthenticatedUserProfile();
+
+  if (profile.onboardingCompleted) {
+    redirect("/");
+  }
 
   return (
     <AuthShell

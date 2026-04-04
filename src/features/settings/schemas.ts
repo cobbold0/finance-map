@@ -8,6 +8,7 @@ export const profileSettingsSchema = z.object({
 
 export const notificationPreferencesSchema = z.object({
   browserEnabled: z.boolean(),
+  budgetWarningThreshold: z.number().min(50).max(95),
   salaryReminder: z.boolean(),
   monthlyReviewReminder: z.boolean(),
   budgetWarningReminder: z.boolean(),
