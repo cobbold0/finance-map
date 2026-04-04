@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { randomUUID } from "node:crypto";
 import { createClient } from "@/lib/supabase/server";
 import { goalSchema } from "@/features/goals/schemas";
 
@@ -67,7 +68,7 @@ export async function saveGoalAction(values: unknown, goalId?: string) {
   const nextMilestones = payload.data.milestones
     .filter((milestone) => milestone.title.trim().length > 0)
     .map((milestone) => ({
-      id: milestone.id,
+      id: milestone.id ?? randomUUID(),
       goal_id: persistedGoalId,
       name: milestone.title.trim(),
       target_amount: milestone.targetAmount,
@@ -114,7 +115,7 @@ export async function saveGoalAction(values: unknown, goalId?: string) {
   const nextPhases = payload.data.phases
     .filter((phase) => phase.title.trim().length > 0)
     .map((phase, index) => ({
-      id: phase.id,
+      id: phase.id ?? randomUUID(),
       goal_id: persistedGoalId,
       phase_number: phase.order || index + 1,
       name: phase.title.trim(),
