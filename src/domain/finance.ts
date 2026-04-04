@@ -5,6 +5,7 @@ import {
   CurrencyCode,
   ExchangeRate,
   Goal,
+  TransactionDisplayType,
   Transaction,
   Wallet,
 } from "@/domain/models";
@@ -124,6 +125,35 @@ export function getIncomeVsExpense(transactions: Transaction[]) {
     },
     { income: 0, expense: 0 },
   );
+}
+
+export function getTransactionDisplayType(transaction: Pick<Transaction, "type" | "destinationWalletId">): TransactionDisplayType {
+  if (transaction.type === "transfer" && !transaction.destinationWalletId) {
+    return "withdrawal";
+  }
+
+  return transaction.type;
+}
+
+export function getTransactionDisplayLabel(transaction: Pick<Transaction, "type" | "destinationWalletId">) {
+  const displayType = getTransactionDisplayType(transaction);
+
+  switch (displayType) {
+    case "income":
+      return "Income";
+    case "expense":
+      return "Expense";
+    case "transfer":
+      return "Transfer";
+    case "withdrawal":
+      return "Withdrawal";
+    case "salary":
+      return "Salary";
+    case "bonus":
+      return "Bonus";
+    case "adjustment":
+      return "Adjustment";
+  }
 }
 
 export function formatMonthLabel(value: string) {

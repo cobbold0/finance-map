@@ -23,6 +23,10 @@ export type TransactionType =
   | "bonus"
   | "adjustment";
 
+export type TransactionDisplayType =
+  | TransactionType
+  | "withdrawal";
+
 export type GoalPriority = "low" | "medium" | "high";
 export type GoalType = "generic" | "building_project";
 export type GoalStatus = "active" | "paused" | "completed";
@@ -97,9 +101,11 @@ export interface Transaction {
   walletId: string;
   destinationWalletId: string | null;
   type: TransactionType;
+  displayType: TransactionDisplayType;
   amount: number;
   nativeCurrency: CurrencyCode;
   convertedAmountBase: number | null;
+  categoryId: string | null;
   category: string | null;
   tags: string[];
   notes: string | null;

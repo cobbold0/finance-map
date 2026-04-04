@@ -1,8 +1,13 @@
 import { notFound } from "next/navigation";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { PageHeader } from "@/components/app/page-header";
-import { formatCurrency } from "@/domain/finance";
-import { getTransactions } from "@/data/finance-repository";
+import {
+  formatCurrency,
+  formatMonthLabel,
+  getTransactionDisplayLabel,
+} from "@/domain/finance";
+import { getBudgetOverview, getTransactions } from "@/data/finance-repository";
 
 export default async function TransactionDetailPage({
   params,
@@ -10,18 +15,39 @@ export default async function TransactionDetailPage({
   params: Promise<{ transactionId: string }>;
 }) {
   const { transactionId } = await params;
-  const transactions = await getTransactions();
+  const [transactions, budgetOverview] = await Promise.all([
+    getTransactions(),
+    getBudgetOverview(),
+  ]);
   const transaction = transactions.find((item) => item.id === transactionId);
 
   if (!transaction) {
     notFound();
   }
 
+  const transactionMonth = transaction.occurredAt.slice(0, 7);
+  const countsTowardActiveBudget =
+    transaction.displayType === "expense" &&
+    Boolean(transaction.categoryId) &&
+    budgetOverview.currentBudget?.month === transactionMonth;
+
   return (
     <div className="space-y-6">
-      <PageHeader eyebrow="Transactions" title={transaction.category ?? "Transaction detail"} description="Reference, notes, amount, and reconciliation context." />
+      <PageHeader
+        eyebrow="Transactions"
+        title={transaction.category ?? getTransactionDisplayLabel(transaction)}
+        description="Reference, notes, amount, and reconciliation context."
+      />
       <Card>
         <CardContent className="space-y-3">
+          <div className="flex flex-wrap gap-2">
+            <Badge>{getTransactionDisplayLabel(transaction)}</Badge>
+            {countsTowardActiveBudget ? (
+              <Badge className="border-emerald-400/20 bg-emerald-400/10 text-emerald-200">
+                Counts toward {formatMonthLabel(transactionMonth)} budget
+              </Badge>
+            ) : null}
+          </div>
           <p className="text-3xl font-semibold">
             {formatCurrency(transaction.amount, transaction.nativeCurrency)}
           </p>

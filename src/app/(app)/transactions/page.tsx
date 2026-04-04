@@ -1,9 +1,10 @@
+import Link from "next/link";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/app/empty-state";
 import { HeaderActionLink, PageHeader } from "@/components/app/page-header";
-import { formatCurrency } from "@/domain/finance";
+import { formatCurrency, getTransactionDisplayLabel } from "@/domain/finance";
 import { getTransactions, getWallets } from "@/data/finance-repository";
 
 export default async function TransactionsPage({
@@ -71,12 +72,15 @@ export default async function TransactionsPage({
         <Card>
           <CardContent className="space-y-3">
             {transactions.map((transaction) => (
-              <div
+              <Link
                 key={transaction.id}
+                href={`/transactions/${transaction.id}`}
                 className="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3"
               >
                 <div>
-                  <p className="font-medium">{transaction.category ?? "Uncategorized"}</p>
+                  <p className="font-medium">
+                    {transaction.category ?? getTransactionDisplayLabel(transaction)}
+                  </p>
                   <p className="text-sm text-muted-foreground">{transaction.notes ?? "No note"}</p>
                 </div>
                 <div className="text-right">
@@ -84,10 +88,10 @@ export default async function TransactionsPage({
                     {formatCurrency(transaction.amount, transaction.nativeCurrency)}
                   </p>
                   <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
-                    {transaction.type}
+                    {getTransactionDisplayLabel(transaction)}
                   </p>
                 </div>
-              </div>
+              </Link>
             ))}
           </CardContent>
         </Card>

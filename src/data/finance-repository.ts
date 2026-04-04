@@ -23,6 +23,7 @@ import {
   calculateBudgetState,
   convertToBaseCurrency,
   enrichBudgetCategory,
+  getTransactionDisplayType,
   getIncomeVsExpense,
 } from "@/domain/finance";
 import { createClient } from "@/lib/supabase/server";
@@ -37,6 +38,10 @@ function parseAmount(value: number | string | null | undefined) {
   }
 
   return 0;
+}
+
+function normalizeBudgetCategoryName(value: string | null | undefined) {
+  return value?.trim().replace(/\s+/g, " ").toLowerCase() ?? "";
 }
 
 async function getAuthedSupabase() {
@@ -185,23 +190,32 @@ export async function getTransactions(
 
       return true;
     })
-    .map((transaction) => ({
-      id: transaction.id,
-      userId: transaction.user_id,
-      walletId: transaction.wallet_id,
-      destinationWalletId: transaction.destination_wallet_id ?? null,
-      type: transaction.type,
-      amount: parseAmount(transaction.amount),
-      nativeCurrency: transaction.currency ?? "GHS",
-      convertedAmountBase: parseAmount(transaction.amount),
-      category: transaction.category ?? null,
-      tags: [],
-      notes: transaction.description ?? null,
-      reference: null,
-      occurredAt: transaction.date,
-      importSource: null,
-      reconciliationStatus: "matched",
-    }));
+    .map((transaction) => {
+      const destinationWalletId = transaction.destination_wallet_id ?? null;
+
+      return {
+        id: transaction.id,
+        userId: transaction.user_id,
+        walletId: transaction.wallet_id,
+        destinationWalletId,
+        type: transaction.type,
+        displayType: getTransactionDisplayType({
+          type: transaction.type,
+          destinationWalletId,
+        }),
+        amount: parseAmount(transaction.amount),
+        nativeCurrency: transaction.currency ?? "GHS",
+        convertedAmountBase: parseAmount(transaction.amount),
+        categoryId: transaction.category_id ?? null,
+        category: transaction.category ?? null,
+        tags: [],
+        notes: transaction.description ?? null,
+        reference: null,
+        occurredAt: transaction.date,
+        importSource: null,
+        reconciliationStatus: "matched",
+      };
+    });
 }
 
 export async function getWalletDetail(
@@ -301,20 +315,18 @@ export async function getGoalDetail(goalId: string): Promise<GoalDetailSnapshot 
   return { goal, milestones, phases };
 }
 
-export async function getBudgetOverview(): Promise<BudgetOverviewSnapshot> {
+export async function getBudgetOverview(month = new Date().toISOString().slice(0, 7)): Promise<BudgetOverviewSnapshot> {
   const ctx = await getAuthedSupabase();
 
   if (!ctx) {
     return { currentBudget: null, categories: [] };
   }
 
-  const currentMonth = new Date().toISOString().slice(0, 7);
-
   const { data: budgetRow } = await ctx.supabase
     .from("budgets")
     .select("*")
     .eq("user_id", ctx.user.id)
-    .eq("month", currentMonth)
+    .eq("month", month)
     .maybeSingle();
 
   if (!budgetRow) {
@@ -336,6 +348,24 @@ export async function getBudgetOverview(): Promise<BudgetOverviewSnapshot> {
     .select("id, budget_id, category_id, limit_amount, spent_amount, budget_categories(name)")
     .eq("budget_id", budget.id);
 
+  const transactions = await getTransactions({
+    type: "expense",
+  });
+  const expenseByCategory = transactions.reduce((totals, transaction) => {
+    if (!transaction.occurredAt.startsWith(month)) {
+      return totals;
+    }
+
+    const categoryKey = transaction.categoryId ?? normalizeBudgetCategoryName(transaction.category);
+
+    if (!categoryKey) {
+      return totals;
+    }
+
+    totals.set(categoryKey, (totals.get(categoryKey) ?? 0) + transaction.amount);
+    return totals;
+  }, new Map<string, number>());
+
   const categories: BudgetCategory[] = (items ?? []).map((item) => {
     const categoryRelationship = item as {
       budget_categories?:
@@ -348,6 +378,7 @@ export async function getBudgetOverview(): Promise<BudgetOverviewSnapshot> {
     const categoryName = Array.isArray(categoryRelationship.budget_categories)
       ? categoryRelationship.budget_categories[0]?.name
       : categoryRelationship.budget_categories?.name;
+    const normalizedCategoryName = normalizeBudgetCategoryName(categoryName);
 
     return enrichBudgetCategory({
       id: item.id,
@@ -355,7 +386,10 @@ export async function getBudgetOverview(): Promise<BudgetOverviewSnapshot> {
       categoryId: item.category_id,
       categoryName: categoryName ?? "Category",
       limitAmount: parseAmount(item.limit_amount),
-      spentAmount: parseAmount(item.spent_amount),
+      spentAmount:
+        expenseByCategory.get(item.category_id) ??
+        expenseByCategory.get(normalizedCategoryName) ??
+        0,
     });
   });
 

@@ -8,12 +8,27 @@ export function MetricCard({
   value,
   currency = "GHS",
   trend,
+  detail,
+  format = "currency",
 }: {
   title: string;
   value: number;
   currency?: CurrencyCode;
   trend?: "up" | "down";
+  detail?: string;
+  format?: "currency" | "percent" | "number";
 }) {
+  const formattedValue =
+    format === "percent"
+      ? new Intl.NumberFormat("en-US", {
+          maximumFractionDigits: value >= 10 ? 0 : 1,
+        }).format(value) + "%"
+      : format === "number"
+        ? new Intl.NumberFormat("en-US", {
+            maximumFractionDigits: 0,
+          }).format(value)
+        : formatCompactCurrency(value, currency);
+
   return (
     <Card>
       <CardContent className="space-y-3">
@@ -27,9 +42,10 @@ export function MetricCard({
             )
           ) : null}
         </div>
-        <p className="text-2xl font-semibold tracking-tight">
-          {formatCompactCurrency(value, currency)}
-        </p>
+        <div className="space-y-1">
+          <p className="text-2xl font-semibold tracking-tight">{formattedValue}</p>
+          {detail ? <p className="text-xs text-muted-foreground">{detail}</p> : null}
+        </div>
       </CardContent>
     </Card>
   );

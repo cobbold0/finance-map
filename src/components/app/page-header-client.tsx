@@ -54,9 +54,6 @@ export function PageHeaderClient({
     >
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0 space-y-1">
-          {eyebrow ? (
-            <div className="page-header-eyebrow hidden md:block">{eyebrow}</div>
-          ) : null}
           <h1 className="page-header-title text-xl font-semibold tracking-tight md:text-xl">
             {title}
           </h1>

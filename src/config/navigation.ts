@@ -27,5 +27,6 @@ export const quickActions = [
   { id: "income", title: "Add income", href: "/transactions/new?type=income" },
   { id: "expense", title: "Add expense", href: "/transactions/new?type=expense" },
   { id: "transfer", title: "Transfer", href: "/transactions/new?type=transfer" },
+  { id: "withdrawal", title: "Withdrawal", href: "/transactions/new?type=withdrawal" },
   { id: "goal", title: "Create goal", href: "/goals/new" },
 ] as const;

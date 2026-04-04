@@ -13,7 +13,7 @@ export default async function BudgetMonthDetailPage({
   const { month } = await params;
   const [profile, snapshot] = await Promise.all([
     getCurrentUserProfile(),
-    getBudgetOverview(),
+    getBudgetOverview(month),
   ]);
 
   if (!snapshot.currentBudget || snapshot.currentBudget.month !== month) {
