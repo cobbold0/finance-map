@@ -59,7 +59,13 @@ async function putInCache(cacheName, request, response) {
 
 async function handleNavigationRequest(event) {
   const { request } = event;
-  const preloadResponse = await event.preloadResponse;
+  let preloadResponse;
+
+  try {
+    preloadResponse = await event.preloadResponse;
+  } catch {
+    preloadResponse = undefined;
+  }
 
   if (isCacheableResponse(preloadResponse)) {
     await putInCache(PAGE_CACHE, request, preloadResponse);
