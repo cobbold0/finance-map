@@ -1,11 +1,24 @@
 const SHELL_CACHE = "finance-map-shell-v5";
-const PAGE_CACHE = "finance-map-pages-v5";
-const STATIC_CACHE = "finance-map-static-v5";
+const PAGE_CACHE = "finance-map-pages-v6";
+const STATIC_CACHE = "finance-map-static-v6";
 const CACHE_NAMES = [SHELL_CACHE, PAGE_CACHE, STATIC_CACHE];
 const PRECACHE_URLS = [
   "/",
   "/offline",
   "/manifest.webmanifest",
+];
+const CORE_APP_ROUTES = [
+  "/",
+  "/transactions",
+  "/budgets",
+  "/goals",
+  "/reports",
+  "/wallets",
+  "/notifications",
+  "/settings",
+  "/settings/preferences",
+  "/ai-summary",
+  "/pwa-debug",
 ];
 
 function isCacheableResponse(response) {
@@ -108,14 +121,28 @@ async function handleStaticRequest(request) {
 self.addEventListener("install", (event) => {
   event.waitUntil(
     (async () => {
-      const cache = await caches.open(SHELL_CACHE);
+      const shellCache = await caches.open(SHELL_CACHE);
+      const pageCache = await caches.open(PAGE_CACHE);
 
       await Promise.allSettled(
         PRECACHE_URLS.map(async (url) => {
           const response = await fetch(url, { cache: "reload" });
 
           if (isCacheableResponse(response)) {
-            await cache.put(url, response);
+            await shellCache.put(url, response);
+          }
+        }),
+      );
+
+      await Promise.allSettled(
+        CORE_APP_ROUTES.map(async (url) => {
+          const response = await fetch(url, {
+            cache: "reload",
+            credentials: "same-origin",
+          });
+
+          if (isCacheableResponse(response)) {
+            await pageCache.put(url, response);
           }
         }),
       );
