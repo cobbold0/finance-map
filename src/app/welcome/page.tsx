@@ -51,6 +51,51 @@ const audience = [
   "Anyone who wants money management to feel elegant, clear, and usable",
 ] as const;
 
+const snapshotStats = [
+  { value: "6", label: "wallets for real-life money roles" },
+  { value: "1", label: "clear view across spending and saving" },
+  { value: "24/7", label: "confidence before you spend" },
+] as const;
+
+const usageSteps = [
+  {
+    step: "01",
+    title: "Create the wallets your life already needs",
+    description:
+      "Start with the real categories behind your money like bills, savings, essentials, transport, and flexible spending.",
+  },
+  {
+    step: "02",
+    title: "Assign your money with intention",
+    description:
+      "When income comes in, spread it across those wallets so each amount already has a job before spending begins.",
+  },
+  {
+    step: "03",
+    title: "Track what moves",
+    description:
+      "Record expenses, transfers, and income updates so the picture stays accurate and each wallet remains trustworthy.",
+  },
+] as const;
+
+const habitSteps = [
+  {
+    title: "Check in briefly every day",
+    description:
+      "A quick look before you spend keeps the system useful. You do not need a long session, just a small moment of awareness.",
+  },
+  {
+    title: "Review and rebalance each week",
+    description:
+      "Move money when priorities change, top up the wallets under pressure, and keep your plan aligned with real life.",
+  },
+  {
+    title: "Keep the routine light",
+    description:
+      "The habit works because it is simple. Open the app, understand your position, make one good decision, and move on.",
+  },
+] as const;
+
 export default async function WelcomePage() {
   await redirectIfAuthenticated();
 
@@ -122,6 +167,19 @@ export default async function WelcomePage() {
                   <Link href="/auth/sign-in">Sign in</Link>
                 </Button>
               </div>
+
+              <div className="mt-14 grid gap-4 md:grid-cols-3">
+                {snapshotStats.map((stat) => (
+                  <div key={stat.label} className="rounded-[1.5rem] bg-[#f7f7f4] p-5">
+                    <p className="text-4xl font-semibold tracking-[-0.06em] text-[#171411]">
+                      {stat.value}
+                    </p>
+                    <p className="mt-3 max-w-[14rem] text-sm leading-6 text-black/56">
+                      {stat.label}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </section>
 
             <aside className="flex flex-col justify-between rounded-[2rem] bg-[#f7f7f4] p-6 md:p-8">
@@ -136,9 +194,46 @@ export default async function WelcomePage() {
                 </p>
               </div>
 
-              <div className="mt-10 space-y-4">
+              <div className="mt-10 rounded-[1.5rem] bg-white p-5 shadow-[0_12px_30px_rgba(23,20,17,0.04)]">
+                <div className="flex items-end justify-between">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#8a6b3d]">
+                      Monthly balance rhythm
+                    </p>
+                    <p className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-[#171411]">
+                      Calm, visible, intentional
+                    </p>
+                  </div>
+                  <span className="rounded-full bg-[#edf5f0] px-3 py-1 text-xs font-medium text-[#2b7d61]">
+                    On track
+                  </span>
+                </div>
+
+                <div className="mt-8 flex h-36 items-end gap-3">
+                  {[
+                    { h: "34%", tone: "bg-[#d7e8dd]" },
+                    { h: "52%", tone: "bg-[#cadfce]" },
+                    { h: "68%", tone: "bg-[#bdd6c3]" },
+                    { h: "60%", tone: "bg-[#a8ccb3]" },
+                    { h: "82%", tone: "bg-[#8fbea1]" },
+                    { h: "74%", tone: "bg-[#2b7d61]" },
+                  ].map((bar, index) => (
+                    <div key={index} className="flex flex-1 flex-col items-center gap-3">
+                      <div
+                        className={`w-full rounded-full ${bar.tone}`}
+                        style={{ height: bar.h }}
+                      />
+                      <span className="text-[10px] uppercase tracking-[0.18em] text-black/35">
+                        {["Jan", "Feb", "Mar", "Apr", "May", "Jun"][index]}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-8 space-y-4">
                 {principles.map((item) => (
-                  <div key={item} className="pt-4 first:pt-0">
+                  <div key={item} className="pt-2 first:pt-0">
                     <p className="text-sm leading-7 text-black/62">{item}</p>
                   </div>
                 ))}
@@ -157,6 +252,39 @@ export default async function WelcomePage() {
             <h2 className="mt-5 text-4xl font-semibold leading-tight tracking-[-0.05em] md:text-5xl">
               Built by Augustine Cobbold, first for himself, then for everyone else.
             </h2>
+
+            <div className="mt-10 rounded-[1.75rem] bg-[#f7f7f4] p-6">
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#2b7d61]">
+                Visual idea
+              </p>
+              <div className="mt-6 rounded-[1.5rem] bg-white p-5 shadow-[0_12px_30px_rgba(23,20,17,0.04)]">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-medium text-black/60">One income, many jobs</p>
+                  <p className="text-sm font-semibold text-[#171411]">GHS 8,400</p>
+                </div>
+                <div className="mt-5 space-y-3">
+                  {[
+                    { label: "Bills", width: "32%", color: "bg-[#1b1a18]" },
+                    { label: "Savings", width: "24%", color: "bg-[#2b7d61]" },
+                    { label: "Essentials", width: "20%", color: "bg-[#c7b28c]" },
+                    { label: "Flex", width: "12%", color: "bg-[#d8ded7]" },
+                  ].map((item) => (
+                    <div key={item.label}>
+                      <div className="mb-2 flex items-center justify-between text-xs uppercase tracking-[0.16em] text-black/42">
+                        <span>{item.label}</span>
+                        <span>{item.width}</span>
+                      </div>
+                      <div className="h-2.5 rounded-full bg-[#efede8]">
+                        <div
+                          className={`h-2.5 rounded-full ${item.color}`}
+                          style={{ width: item.width }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="space-y-6 text-base leading-8 text-black/64">
@@ -242,6 +370,69 @@ export default async function WelcomePage() {
               >
                 <Check className="mt-2 h-4 w-4 shrink-0 text-[#2b7d61]" />
                 <p>{point}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-4 py-4 md:px-6 md:py-8">
+        <div className="mx-auto max-w-7xl rounded-[2rem] bg-[#f7f7f4] px-6 py-8 md:px-8 md:py-10">
+          <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.32em] text-[#8a6b3d]">
+                How to use it
+              </p>
+              <h2 className="mt-5 text-4xl font-semibold leading-tight tracking-[-0.05em] md:text-5xl">
+                A clean system in
+                <br />
+                three simple steps.
+              </h2>
+              <p className="mt-6 max-w-md text-base leading-8 text-black/62">
+                Finance Map works best when it mirrors your real money routine. Start
+                simple, stay consistent, and let the wallets carry the structure.
+              </p>
+            </div>
+
+            <div className="grid gap-4">
+              {usageSteps.map((item) => (
+                <article key={item.step} className="rounded-[1.5rem] bg-white p-6">
+                  <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#2b7d61]">
+                    Step {item.step}
+                  </p>
+                  <h3 className="mt-4 text-2xl font-semibold tracking-[-0.03em]">
+                    {item.title}
+                  </h3>
+                  <p className="mt-4 max-w-2xl text-sm leading-7 text-black/64">
+                    {item.description}
+                  </p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="px-4 py-12 md:px-6 md:py-20">
+        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.32em] text-[#8a6b3d]">
+              Make it a habit
+            </p>
+            <h2 className="mt-5 text-4xl font-semibold leading-tight tracking-[-0.05em] md:text-5xl">
+              The goal is not more effort.
+              <br />
+              The goal is a better rhythm.
+            </h2>
+          </div>
+
+          <div className="space-y-5">
+            {habitSteps.map((item) => (
+              <div key={item.title} className="rounded-[1.5rem] bg-[#f7f7f4] p-6">
+                <h3 className="text-2xl font-semibold tracking-[-0.03em]">{item.title}</h3>
+                <p className="mt-4 max-w-2xl text-sm leading-7 text-black/64">
+                  {item.description}
+                </p>
               </div>
             ))}
           </div>
