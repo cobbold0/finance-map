@@ -1,14 +1,15 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import Image from "next/image";
 import {
   ArrowRight,
   Check,
+  Landmark,
   PiggyBank,
   ReceiptText,
   Sparkles,
   WalletCards,
 } from "lucide-react";
-import { LogoMark } from "@/components/app/logo-mark";
 import { redirectIfAuthenticated } from "@/data/auth";
 import { Button } from "@/components/ui/button";
 
@@ -42,6 +43,12 @@ const features = [
     description:
       "Keep goals visible so saving becomes an active decision, not whatever happens to be left over.",
     icon: PiggyBank,
+  },
+  {
+    title: "Bank details in one place",
+    description:
+      "Keep your bank and mobile money account details ready in one place so you can share them quickly whenever someone needs to pay you.",
+    icon: Landmark,
   },
 ] as const;
 
@@ -96,37 +103,60 @@ const habitSteps = [
   },
 ] as const;
 
+const productShots = [
+  {
+    src: "/welcome/wallet-summary.png",
+    alt: "Finance Map mobile wallet summary screen showing total balance, income, expense, investments, and savings rate.",
+    title: "Wallet visibility",
+    description: "Big-picture balances stay legible without feeling overloaded.",
+  },
+  {
+    src: "/welcome/reports-trend.png",
+    alt: "Finance Map mobile reports screen showing income, expense, net totals, and a monthly trend chart.",
+    title: "Reports that explain themselves",
+    description: "Trend views stay readable and grounded in real activity.",
+  },
+  {
+    src: "/welcome/settings-screen.png",
+    alt: "Finance Map mobile settings screen listing profile, notifications, financial records, categories, bank details, and import or export.",
+    title: "Settings with structure",
+    description: "Admin surfaces keep the same quiet visual rhythm as the rest of the app.",
+  },
+] as const;
+
 export default async function WelcomePage() {
   await redirectIfAuthenticated();
 
   return (
-    <main className="min-h-screen bg-white text-[#171411]">
+    <main className="min-h-screen bg-[#050505] text-[#f5efe4]">
       <section className="px-4 py-4 md:px-6 md:py-6">
-        <div className="mx-auto max-w-7xl rounded-[2rem] bg-white px-5 py-5 md:px-8 md:py-7">
+        <div className="mx-auto max-w-7xl rounded-[2rem] bg-[radial-gradient(circle_at_top_left,rgba(47,125,98,0.22),transparent_34%),linear-gradient(180deg,#121212_0%,#080808_100%)] px-5 py-5 shadow-[0_24px_80px_rgba(0,0,0,0.45)] md:px-8 md:py-7">
           <header className="flex flex-col gap-5 pb-5 md:flex-row md:items-center md:justify-between">
             <div className="flex items-center gap-3">
-              <LogoMark />
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#16392f] text-sm font-semibold text-[#d7f3e6] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+                FM
+              </div>
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#2b7d61]">
                   Finance Map
                 </p>
-                <p className="text-sm text-black/50">Personal finance, designed with restraint</p>
+                <p className="text-sm text-white/50">Personal finance, designed with restraint</p>
               </div>
             </div>
 
-            <nav className="flex flex-wrap items-center gap-4 text-sm text-black/58">
-              <a href="#story" className="transition hover:text-black">
+            <nav className="flex flex-wrap items-center gap-4 text-sm text-white/58">
+              <a href="#story" className="transition hover:text-white">
                 Story
               </a>
-              <a href="#features" className="transition hover:text-black">
+              <a href="#features" className="transition hover:text-white">
                 Features
               </a>
-              <a href="#who" className="transition hover:text-black">
+              <a href="#who" className="transition hover:text-white">
                 Who it&apos;s for
               </a>
               <Button
                 asChild
-                className="rounded-full bg-[#1b1a18] px-5 text-[#f8f3ea] hover:bg-black"
+                className="rounded-full bg-[#2f7d62] px-5 text-[#f4f7f5] hover:bg-[#3a9878]"
               >
                 <Link href="/auth/sign-up">Get started</Link>
               </Button>
@@ -140,7 +170,7 @@ export default async function WelcomePage() {
                 <br />
                 with more grace and less noise.
               </h1>
-              <p className="mt-8 max-w-2xl text-base leading-8 text-black/62 md:text-lg">
+              <p className="mt-8 max-w-2xl text-base leading-8 text-white/66 md:text-lg">
                 Finance Map is built around a simple idea: the money in your bank may sit
                 in one place, but in real life it already has different jobs. So instead
                 of managing one vague balance, you spread it into wallets that reflect how
@@ -151,7 +181,7 @@ export default async function WelcomePage() {
                 <Button
                   asChild
                   size="lg"
-                  className="rounded-full bg-[#1b1a18] px-7 text-[#f8f3ea] hover:bg-black"
+                  className="rounded-full bg-[#2f7d62] px-7 text-[#f4f7f5] hover:bg-[#3a9878]"
                 >
                   <Link href="/auth/sign-up">
                     Create your account
@@ -162,7 +192,7 @@ export default async function WelcomePage() {
                   asChild
                   size="lg"
                   variant="outline"
-                  className="rounded-full border-black/12 bg-transparent px-7 text-[#171411] hover:bg-black/3"
+                  className="rounded-full bg-[#17191c] px-7 text-[#f5efe4] hover:bg-[#1d2024]"
                 >
                   <Link href="/auth/sign-in">Sign in</Link>
                 </Button>
@@ -170,11 +200,11 @@ export default async function WelcomePage() {
 
               <div className="mt-14 grid gap-4 md:grid-cols-3">
                 {snapshotStats.map((stat) => (
-                  <div key={stat.label} className="rounded-[1.5rem] bg-[#f7f7f4] p-5">
-                    <p className="text-4xl font-semibold tracking-[-0.06em] text-[#171411]">
+                  <div key={stat.label} className="rounded-[1.5rem] bg-[#141619] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+                    <p className="text-4xl font-semibold tracking-[-0.06em] text-[#f5efe4]">
                       {stat.value}
                     </p>
-                    <p className="mt-3 max-w-[14rem] text-sm leading-6 text-black/56">
+                    <p className="mt-3 max-w-[14rem] text-sm leading-6 text-white/54">
                       {stat.label}
                     </p>
                   </div>
@@ -182,7 +212,7 @@ export default async function WelcomePage() {
               </div>
             </section>
 
-            <aside className="flex flex-col justify-between rounded-[2rem] bg-[#f7f7f4] p-6 md:p-8">
+            <aside className="flex flex-col justify-between rounded-[2rem] bg-[#121518] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] md:p-8">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#2b7d61]">
                   The concept
@@ -194,17 +224,17 @@ export default async function WelcomePage() {
                 </p>
               </div>
 
-              <div className="mt-10 rounded-[1.5rem] bg-white p-5 shadow-[0_12px_30px_rgba(23,20,17,0.04)]">
+              <div className="mt-10 rounded-[1.5rem] bg-[#17191c] p-5 shadow-[0_20px_40px_rgba(0,0,0,0.35)]">
                 <div className="flex items-end justify-between">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#8a6b3d]">
                       Monthly balance rhythm
                     </p>
-                    <p className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-[#171411]">
+                    <p className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-[#f5efe4]">
                       Calm, visible, intentional
                     </p>
                   </div>
-                  <span className="rounded-full bg-[#edf5f0] px-3 py-1 text-xs font-medium text-[#2b7d61]">
+                  <span className="rounded-full bg-[#14382d] px-3 py-1 text-xs font-medium text-[#9bd8bc]">
                     On track
                   </span>
                 </div>
@@ -223,7 +253,7 @@ export default async function WelcomePage() {
                         className={`w-full rounded-full ${bar.tone}`}
                         style={{ height: bar.h }}
                       />
-                      <span className="text-[10px] uppercase tracking-[0.18em] text-black/35">
+                      <span className="text-[10px] uppercase tracking-[0.18em] text-white/35">
                         {["Jan", "Feb", "Mar", "Apr", "May", "Jun"][index]}
                       </span>
                     </div>
@@ -234,7 +264,7 @@ export default async function WelcomePage() {
               <div className="mt-8 space-y-4">
                 {principles.map((item) => (
                   <div key={item} className="pt-2 first:pt-0">
-                    <p className="text-sm leading-7 text-black/62">{item}</p>
+                    <p className="text-sm leading-7 text-white/64">{item}</p>
                   </div>
                 ))}
               </div>
@@ -253,28 +283,28 @@ export default async function WelcomePage() {
               Built by Augustine Cobbold, first for himself, then for everyone else.
             </h2>
 
-            <div className="mt-10 rounded-[1.75rem] bg-[#f7f7f4] p-6">
+            <div className="mt-10 rounded-[1.75rem] bg-[#121518] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
               <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#2b7d61]">
                 Visual idea
               </p>
-              <div className="mt-6 rounded-[1.5rem] bg-white p-5 shadow-[0_12px_30px_rgba(23,20,17,0.04)]">
+              <div className="mt-6 rounded-[1.5rem] bg-[#17191c] p-5 shadow-[0_20px_40px_rgba(0,0,0,0.35)]">
                 <div className="flex items-center justify-between">
-                  <p className="text-sm font-medium text-black/60">One income, many jobs</p>
-                  <p className="text-sm font-semibold text-[#171411]">GHS 8,400</p>
+                  <p className="text-sm font-medium text-white/60">One income, many jobs</p>
+                  <p className="text-sm font-semibold text-[#f5efe4]">GHS 8,400</p>
                 </div>
                 <div className="mt-5 space-y-3">
                   {[
-                    { label: "Bills", width: "32%", color: "bg-[#1b1a18]" },
+                    { label: "Bills", width: "32%", color: "bg-[#f5efe4]" },
                     { label: "Savings", width: "24%", color: "bg-[#2b7d61]" },
-                    { label: "Essentials", width: "20%", color: "bg-[#c7b28c]" },
-                    { label: "Flex", width: "12%", color: "bg-[#d8ded7]" },
+                    { label: "Essentials", width: "20%", color: "bg-[#c7a86d]" },
+                    { label: "Flex", width: "12%", color: "bg-[#4c4f54]" },
                   ].map((item) => (
                     <div key={item.label}>
-                      <div className="mb-2 flex items-center justify-between text-xs uppercase tracking-[0.16em] text-black/42">
+                      <div className="mb-2 flex items-center justify-between text-xs uppercase tracking-[0.16em] text-white/42">
                         <span>{item.label}</span>
                         <span>{item.width}</span>
                       </div>
-                      <div className="h-2.5 rounded-full bg-[#efede8]">
+                      <div className="h-2.5 rounded-full bg-white/[0.08]">
                         <div
                           className={`h-2.5 rounded-full ${item.color}`}
                           style={{ width: item.width }}
@@ -287,7 +317,7 @@ export default async function WelcomePage() {
             </div>
           </div>
 
-          <div className="space-y-6 text-base leading-8 text-black/64">
+          <div className="space-y-6 text-base leading-8 text-white/64">
             <p>
               Augustine Cobbold is a developer who needed a better way to track his own
               finances. He wanted something clearer than a spreadsheet and more personal
@@ -312,8 +342,52 @@ export default async function WelcomePage() {
         </div>
       </section>
 
+      <section className="px-4 py-4 md:px-6 md:py-8">
+        <div className="mx-auto max-w-7xl rounded-[2rem] bg-[linear-gradient(180deg,#0d0f11_0%,#070809_100%)] px-6 py-8 shadow-[0_24px_80px_rgba(0,0,0,0.45)] md:px-8 md:py-10">
+          <div className="max-w-3xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.32em] text-[#8dcbb1]">
+              Product preview
+            </p>
+            <h2 className="mt-5 text-4xl font-semibold leading-tight tracking-[-0.05em] md:text-5xl">
+              The app already knows how to look calm on a real phone.
+            </h2>
+            <p className="mt-6 max-w-2xl text-base leading-8 text-white/62">
+              These screens show the actual product language: clear totals, deliberate
+              spacing, and a dark interface that stays easy to scan in motion.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-5 lg:grid-cols-3">
+              {productShots.map((shot) => (
+                <article
+                  key={shot.src}
+                  className="rounded-[1.75rem] bg-[#121518] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] md:p-5"
+                >
+                  <div className="overflow-hidden rounded-[1.4rem] bg-black">
+                    <Image
+                      src={shot.src}
+                      alt={shot.alt}
+                      width={384}
+                      height={768}
+                      className="h-auto w-full"
+                    />
+                  </div>
+                  <div className="mt-4">
+                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#8dcbb1]">
+                      {shot.title}
+                    </p>
+                    <p className="mt-2 text-sm leading-7 text-white/64">
+                      {shot.description}
+                    </p>
+                  </div>
+                </article>
+              ))}
+          </div>
+        </div>
+      </section>
+
       <section id="features" className="px-4 py-4 md:px-6 md:py-8">
-        <div className="mx-auto max-w-7xl rounded-[2rem] bg-[#181715] px-6 py-8 text-[#f8f3ea] md:px-8 md:py-10">
+        <div className="mx-auto max-w-7xl rounded-[2rem] bg-[linear-gradient(180deg,#0d1713_0%,#08100d_100%)] px-6 py-8 text-[#f8f3ea] shadow-[0_24px_80px_rgba(0,0,0,0.4)] md:px-8 md:py-10">
           <div className="max-w-3xl">
             <p className="text-xs font-semibold uppercase tracking-[0.32em] text-[#8dcbb1]">
               Product features
@@ -328,8 +402,8 @@ export default async function WelcomePage() {
               const Icon = feature.icon;
 
               return (
-                <article key={feature.title} className="rounded-[1.5rem] bg-white/[0.03] p-6 md:p-8">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/6">
+                <article key={feature.title} className="rounded-[1.5rem] bg-[#14181a] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] md:p-8">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/8">
                     <Icon className="h-5 w-5" />
                   </div>
                   <h3 className="mt-8 text-2xl font-semibold tracking-[-0.03em]">
@@ -366,7 +440,7 @@ export default async function WelcomePage() {
             ].map((point) => (
               <div
                 key={point}
-                className="flex items-start gap-4 rounded-[1.25rem] bg-[#f7f7f4] p-5 text-base leading-8 text-black/64"
+                className="flex items-start gap-4 rounded-[1.25rem] bg-[#141619] p-5 text-base leading-8 text-white/64 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
               >
                 <Check className="mt-2 h-4 w-4 shrink-0 text-[#2b7d61]" />
                 <p>{point}</p>
@@ -377,7 +451,7 @@ export default async function WelcomePage() {
       </section>
 
       <section className="px-4 py-4 md:px-6 md:py-8">
-        <div className="mx-auto max-w-7xl rounded-[2rem] bg-[#f7f7f4] px-6 py-8 md:px-8 md:py-10">
+        <div className="mx-auto max-w-7xl rounded-[2rem] bg-[linear-gradient(180deg,#101010_0%,#080808_100%)] px-6 py-8 shadow-[0_24px_80px_rgba(0,0,0,0.4)] md:px-8 md:py-10">
           <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.32em] text-[#8a6b3d]">
@@ -388,7 +462,7 @@ export default async function WelcomePage() {
                 <br />
                 three simple steps.
               </h2>
-              <p className="mt-6 max-w-md text-base leading-8 text-black/62">
+              <p className="mt-6 max-w-md text-base leading-8 text-white/62">
                 Finance Map works best when it mirrors your real money routine. Start
                 simple, stay consistent, and let the wallets carry the structure.
               </p>
@@ -396,14 +470,14 @@ export default async function WelcomePage() {
 
             <div className="grid gap-4">
               {usageSteps.map((item) => (
-                <article key={item.step} className="rounded-[1.5rem] bg-white p-6">
+                <article key={item.step} className="rounded-[1.5rem] bg-[#141619] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
                   <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#2b7d61]">
                     Step {item.step}
                   </p>
                   <h3 className="mt-4 text-2xl font-semibold tracking-[-0.03em]">
                     {item.title}
                   </h3>
-                  <p className="mt-4 max-w-2xl text-sm leading-7 text-black/64">
+                  <p className="mt-4 max-w-2xl text-sm leading-7 text-white/64">
                     {item.description}
                   </p>
                 </article>
@@ -428,9 +502,9 @@ export default async function WelcomePage() {
 
           <div className="space-y-5">
             {habitSteps.map((item) => (
-              <div key={item.title} className="rounded-[1.5rem] bg-[#f7f7f4] p-6">
+              <div key={item.title} className="rounded-[1.5rem] bg-[#141619] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
                 <h3 className="text-2xl font-semibold tracking-[-0.03em]">{item.title}</h3>
-                <p className="mt-4 max-w-2xl text-sm leading-7 text-black/64">
+                <p className="mt-4 max-w-2xl text-sm leading-7 text-white/64">
                   {item.description}
                 </p>
               </div>
@@ -440,7 +514,7 @@ export default async function WelcomePage() {
       </section>
 
       <section id="who" className="px-4 py-4 md:px-6 md:py-8">
-        <div className="mx-auto max-w-7xl rounded-[2rem] bg-white px-6 py-8 md:px-8 md:py-10">
+        <div className="mx-auto max-w-7xl rounded-[2rem] bg-[linear-gradient(180deg,#101010_0%,#080808_100%)] px-6 py-8 shadow-[0_24px_80px_rgba(0,0,0,0.4)] md:px-8 md:py-10">
           <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.32em] text-[#8a6b3d]">
@@ -460,12 +534,12 @@ export default async function WelcomePage() {
                 return (
                   <div
                     key={item}
-                    className="flex items-start gap-4 rounded-[1.25rem] bg-[#f7f7f4] p-5"
+                    className="flex items-start gap-4 rounded-[1.25rem] bg-[#141619] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
                   >
-                    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#efe7d9] text-[#2b7d61]">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#14382d] text-[#9bd8bc]">
                       <Icon className="h-5 w-5" />
                     </div>
-                    <p className="max-w-xl text-base leading-8 text-black/64">{item}</p>
+                    <p className="max-w-xl text-base leading-8 text-white/64">{item}</p>
                   </div>
                 );
               })}
@@ -482,7 +556,7 @@ export default async function WelcomePage() {
           <h2 className="mx-auto mt-5 max-w-4xl text-4xl font-semibold leading-tight tracking-[-0.05em] md:text-6xl">
             Finance Map brings elegance to the everyday reality of managing money.
           </h2>
-          <p className="mx-auto mt-8 max-w-3xl text-base leading-8 text-black/62 md:text-lg">
+          <p className="mx-auto mt-8 max-w-3xl text-base leading-8 text-white/62 md:text-lg">
             Built from Augustine Cobbold&apos;s own need for a better system, then made
             available to everyone else. If you want more clarity without more clutter,
             this is where to begin.
@@ -492,7 +566,7 @@ export default async function WelcomePage() {
             <Button
               asChild
               size="lg"
-              className="rounded-full bg-[#1b1a18] px-7 text-[#f8f3ea] hover:bg-black"
+              className="rounded-full bg-[#2f7d62] px-7 text-[#f4f7f5] hover:bg-[#3a9878]"
             >
               <Link href="/auth/sign-up">
                 Start with Finance Map
@@ -503,10 +577,25 @@ export default async function WelcomePage() {
               asChild
               size="lg"
               variant="outline"
-              className="rounded-full border-black/12 bg-transparent px-7 text-[#171411] hover:bg-black/3"
+              className="rounded-full bg-[#17191c] px-7 text-[#f5efe4] hover:bg-[#1d2024]"
             >
               <Link href="/auth/sign-in">Sign in</Link>
             </Button>
+          </div>
+
+          <div className="mt-12 text-center text-sm leading-7 text-white/45">
+            <p>Copyright © 2026 Augustine Cobbold. All rights reserved.</p>
+            <p className="mt-2">
+              Portfolio:{" "}
+              <a
+                href="https://cobbold.vercel.app/"
+                target="_blank"
+                rel="noreferrer"
+                className="text-[#8dcbb1] transition hover:text-[#b7e5d2]"
+              >
+                cobbold.vercel.app
+              </a>
+            </p>
           </div>
         </div>
       </section>
