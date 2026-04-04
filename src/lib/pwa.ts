@@ -40,6 +40,7 @@ const defaultSnapshot: PwaStatusSnapshot = {
 
 let snapshot: PwaStatusSnapshot = defaultSnapshot;
 const listeners = new Set<() => void>();
+const FINANCE_MAP_CACHE_PREFIX = "finance-map-";
 
 function emitSnapshot(nextSnapshot: PwaStatusSnapshot) {
   snapshot = nextSnapshot;
@@ -92,6 +93,30 @@ export function isPwaRegistrationEnabled() {
 
 function getVapidPublicKey() {
   return getPublicSupabaseEnv()?.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? null;
+}
+
+async function clearFinanceMapCaches() {
+  if (typeof window === "undefined" || !("caches" in window)) {
+    return;
+  }
+
+  const keys = await caches.keys();
+  await Promise.all(
+    keys
+      .filter((key) => key.startsWith(FINANCE_MAP_CACHE_PREFIX))
+      .map((key) => caches.delete(key)),
+  );
+}
+
+async function cleanupServiceWorkers() {
+  if (typeof window === "undefined" || !("serviceWorker" in navigator)) {
+    return;
+  }
+
+  const registrations = await navigator.serviceWorker.getRegistrations();
+
+  await Promise.all(registrations.map((registration) => registration.unregister()));
+  await clearFinanceMapCaches();
 }
 
 function isPushSupported() {
@@ -160,6 +185,11 @@ export async function initializePwa() {
   });
 
   if (!isSupported || !isRegistrationEnabled) {
+    if (isSupported) {
+      await cleanupServiceWorkers();
+    }
+
+    patchSnapshot({ isRegistered: false, isSubscribed: false });
     return snapshot;
   }
 

@@ -9,6 +9,11 @@ import {
   signUpSchema,
 } from "@/features/auth/schemas";
 
+export type AuthFormState = {
+  error?: string | null;
+  fieldErrors?: Partial<Record<"fullName" | "email" | "password", string>>;
+};
+
 export async function signInAction(values: unknown) {
   const payload = signInSchema.safeParse(values);
 
@@ -30,6 +35,40 @@ export async function signInAction(values: unknown) {
 
   revalidatePath("/", "layout");
   return { success: true };
+}
+
+export async function signInFormAction(
+  _prevState: AuthFormState,
+  formData: FormData,
+): Promise<AuthFormState> {
+  const payload = signInSchema.safeParse({
+    email: formData.get("email"),
+    password: formData.get("password"),
+  });
+
+  if (!payload.success) {
+    return {
+      error: payload.error.issues[0]?.message ?? "Invalid credentials.",
+      fieldErrors: Object.fromEntries(
+        payload.error.issues.map((issue) => [String(issue.path[0]), issue.message]),
+      ),
+    };
+  }
+
+  const supabase = await createClient();
+
+  if (!supabase) {
+    return { error: "Supabase is not configured.", fieldErrors: {} };
+  }
+
+  const { error } = await supabase.auth.signInWithPassword(payload.data);
+
+  if (error) {
+    return { error: error.message, fieldErrors: {} };
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/");
 }
 
 export async function signUpAction(values: unknown) {
@@ -70,6 +109,58 @@ export async function signUpAction(values: unknown) {
   }
 
   return { success: true };
+}
+
+export async function signUpFormAction(
+  _prevState: AuthFormState,
+  formData: FormData,
+): Promise<AuthFormState> {
+  const payload = signUpSchema.safeParse({
+    fullName: formData.get("fullName"),
+    email: formData.get("email"),
+    password: formData.get("password"),
+  });
+
+  if (!payload.success) {
+    return {
+      error: payload.error.issues[0]?.message ?? "Invalid details.",
+      fieldErrors: Object.fromEntries(
+        payload.error.issues.map((issue) => [String(issue.path[0]), issue.message]),
+      ),
+    };
+  }
+
+  const supabase = await createClient();
+
+  if (!supabase) {
+    return { error: "Supabase is not configured.", fieldErrors: {} };
+  }
+
+  const { data, error } = await supabase.auth.signUp({
+    email: payload.data.email,
+    password: payload.data.password,
+    options: {
+      data: {
+        full_name: payload.data.fullName,
+      },
+    },
+  });
+
+  if (error) {
+    return { error: error.message, fieldErrors: {} };
+  }
+
+  if (data.user) {
+    await supabase.from("profiles").upsert({
+      id: data.user.id,
+      email: payload.data.email,
+      full_name: payload.data.fullName,
+      currency: "GHS",
+      theme_preference: "dark",
+    });
+  }
+
+  redirect("/onboarding");
 }
 
 export async function signOutAction() {
