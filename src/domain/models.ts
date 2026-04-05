@@ -223,6 +223,19 @@ export interface BankAccountDetail {
   isPrimary: boolean;
 }
 
+export interface MonoConnectedAccount {
+  id: string;
+  userId: string;
+  monoAccountId: string;
+  institutionName: string | null;
+  accountName: string | null;
+  accountNumber: string | null;
+  accountType: string | null;
+  status: string;
+  lastSyncedAt: string | null;
+  createdAt: string;
+}
+
 export interface FinancialRecord {
   id: string;
   userId: string;

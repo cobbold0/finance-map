@@ -10,6 +10,7 @@ import {
   GoalDetailSnapshot,
   GoalMilestone,
   GoalPhase,
+  MonoConnectedAccount,
   NotificationPreference,
   Reminder,
   ReportsSnapshot,
@@ -740,6 +741,37 @@ export async function getBankAccounts() {
   }
 
   return data ?? [];
+}
+
+export async function getMonoConnectedAccounts(): Promise<MonoConnectedAccount[]> {
+  const ctx = await getAuthedSupabase();
+
+  if (!ctx) {
+    return [];
+  }
+
+  const { data, error } = await ctx.supabase
+    .from("mono_connected_accounts")
+    .select("*")
+    .eq("user_id", ctx.user.id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    return [];
+  }
+
+  return (data ?? []).map((account) => ({
+    id: account.id,
+    userId: account.user_id,
+    monoAccountId: account.mono_account_id,
+    institutionName: account.institution_name ?? null,
+    accountName: account.account_name ?? null,
+    accountNumber: account.account_number ?? null,
+    accountType: account.account_type ?? null,
+    status: account.status ?? "linked",
+    lastSyncedAt: account.last_synced_at ?? null,
+    createdAt: account.created_at,
+  }));
 }
 
 export async function getFinancialRecords(): Promise<FinancialRecord[]> {
