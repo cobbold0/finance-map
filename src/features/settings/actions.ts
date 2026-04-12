@@ -165,6 +165,37 @@ export async function saveBankAccountAction(values: unknown, bankAccountId?: str
   }
 
   revalidatePath("/settings/bank-accounts");
+  revalidatePath("/settings");
+  return { success: true };
+}
+
+export async function deleteBankAccountAction(bankAccountId: string) {
+  const supabase = await createClient();
+
+  if (!supabase) {
+    return { error: "Supabase is not configured." };
+  }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Please sign in again." };
+  }
+
+  const { error } = await supabase
+    .from("bank_account_details")
+    .delete()
+    .eq("id", bankAccountId)
+    .eq("user_id", user.id);
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  revalidatePath("/settings/bank-accounts");
+  revalidatePath("/settings");
   return { success: true };
 }
 

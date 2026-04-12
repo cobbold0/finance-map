@@ -1,7 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { toast } from "sonner";
-import { Share2, Copy } from "lucide-react";
+import { useTransition } from "react";
+import { Share2, Copy, Pencil, Trash2 } from "lucide-react";
+import { deleteBankAccountAction } from "@/features/settings/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -45,6 +48,7 @@ export function BankAccountCard({
     notes?: string | null;
   };
 }) {
+  const [pending, startTransition] = useTransition();
   const summary = formatSummary(detail);
 
   async function copyValue(value: string, label: string) {
@@ -70,10 +74,39 @@ export function BankAccountCard({
             <h3 className="text-lg font-semibold">{detail.label}</h3>
             <p className="text-sm text-muted-foreground">{detail.bankName}</p>
           </div>
-          <Button variant="ghost" onClick={shareSummary}>
-            <Share2 className="h-4 w-4" />
-            Share
-          </Button>
+          <div className="flex flex-wrap justify-end gap-1 sm:gap-2">
+            <Button asChild variant="ghost" size="sm">
+              <Link href={`/settings/bank-accounts/${detail.id}/edit`}>
+                <Pencil className="h-4 w-4" />
+                <span className="hidden sm:inline">Edit</span>
+              </Link>
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              disabled={pending}
+              onClick={() =>
+                startTransition(async () => {
+                  const result = await deleteBankAccountAction(detail.id);
+
+                  if (result?.error) {
+                    toast.error(result.error);
+                    return;
+                  }
+
+                  toast.success("Bank details deleted.");
+                })
+              }
+            >
+              <Trash2 className="h-4 w-4" />
+              <span className="hidden sm:inline">Delete</span>
+            </Button>
+            <Button type="button" variant="ghost" size="sm" onClick={shareSummary}>
+              <Share2 className="h-4 w-4" />
+              <span className="hidden sm:inline">Share</span>
+            </Button>
+          </div>
         </div>
         {[
           { label: "Account name", value: detail.accountName },
